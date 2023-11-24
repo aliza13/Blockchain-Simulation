@@ -10,9 +10,8 @@ Block strucutre- nodes within a link list and ptr to next block. Block num, time
 In main(), it will initialize the Cee blockchain and set the genesis block
 
 make_hash() create hash (random func or actually use a hashing algo)
-- #include <openssl/sha.h>
-- https://stackoverflow.com/questions/59112701/sha512-c-program-using-the-openssl-library
-^^ doesn't work well with Windows
+- SHA 256 using CNG- built in window files NOT WORKING
+- simple hash func I made up
 
 add_block() func must add a block to the end of the list, add timestamp and increment block num, ptr 
 - use double ptr**(ptr that points to another ptr, holds addy of another ptr) to add to end of list
