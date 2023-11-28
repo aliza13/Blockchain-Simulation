@@ -12,7 +12,7 @@ typedef struct hash_info_needed {
     char *previous_hash;
 } hash_info_needed;
 
-void print_block(const hash_info_needed *block) {
+void print_block(hash_info_needed *block) {
     printf("Timestamp: %ld\n", block->timestamp);
     printf("Data: %.2f\n", block->data);
     printf("Previous Hash: %s\n", block->previous_hash);
@@ -122,7 +122,7 @@ Cleanup:
 int main() {
     hash_info_needed myBlock;
     myBlock.timestamp = 12345678910;
-    myBlock.data = 45.2;
+    myBlock.data = 56.2;
     myBlock.previous_hash = NULL;
     // create the hash and get it as a hexadecimal string
     char* hexHash = make_hash(&myBlock);
