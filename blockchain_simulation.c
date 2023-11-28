@@ -38,4 +38,43 @@ int main() {
     return 0;
 }
 
+add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255])
+{
+    // Create new block
+    block_node *new_block = malloc(sizeof(block_node));
 
+    if (new_block)
+    {
+        /*Assign the block it's values*/
+        new_block->timestamp = new_timestamp;
+        new_block->data = new_data;
+        // PREVIOUS HASH FIELD NEEDED
+        // HASH FIELD NEEDED
+        new_block->next = NULL;
+
+        // If linked list is empty, the new block is the genesis block.
+        if (head == NULL)
+        {
+            //new_block->previous_hash = NULL;
+            return new_block;
+        }
+
+        // Otherwise, iterate through the chain and add the block at the end.
+        else
+        {
+            block_node *current = head;
+            while (current->next != NULL)
+            {
+                current = current->next;
+            }
+            current->next = new_block;
+
+            return head;
+        }
+    }
+
+    else
+    {
+        return NULL;
+    }
+}
