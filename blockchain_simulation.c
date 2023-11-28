@@ -47,10 +47,17 @@ int main() {
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
         enum {ADD = 1, DISPLAY, MENU, QUIT};
+        float data;
 
         switch (choice)
-        {
+        { 
             case ADD:
+                // Need a timestamp getter here
+                // data = get_float("Enter data: "); Didn't work how I wanted it to
+                printf("Enter data: ");
+                scanf(" %f", &data);
+                clear_buffer();
+                printf("Data: %.2f", data);
                 break;     
             case DISPLAY:
                 break;   
@@ -267,14 +274,14 @@ int get_int(const char *prompt)
 
 int get_float(const char *prompt)
 {
-    float num;
+    double num;
     int ret;
     int count;
 
     do
     {
         printf("%s", prompt);
-        ret = scanf("%f", &num);
+        ret = scanf("%lf", &num);
 
         /* Clear buffer */
         count = clear_buffer();
