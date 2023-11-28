@@ -6,16 +6,10 @@
 #include <windows.h>
 #include <bcrypt.h>
 
-typedef struct {
-    float amount;
-    char sender_addy[64];
-    char receiver_addy[64];
-} transaction_data;
-
 typedef struct block_node {
     int block_num;
     time_t timestamp;
-    transaction_data *data;
+    int data; // Cee is currency, data is amount
     char *previous_hash;
     char hash[65]; 
     struct block_node *next;
@@ -26,9 +20,7 @@ typedef struct block_node {
 void print_block(const block_node *block) {
     printf("Block Number: %d\n", block->block_num);
     printf("Timestamp: %ld\n", block->timestamp);
-    printf("Amount: %.2f\n", block->data->amount);
-    printf("Sender Address: %s\n", block->data->sender_addy);
-    printf("Receiver Address: %s\n", block->data->receiver_addy);
+    printf("Amount: %.2f\n", block->data);
     printf("Previous Hash: %s\n", block->previous_hash);
     printf("Hash: %s\n", block->hash);
 }
