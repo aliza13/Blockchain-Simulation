@@ -25,7 +25,7 @@ typedef struct block_node {
 
 // void make_hash(block_node *block);
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255]);
+block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash); //char new_hash[255]
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -43,21 +43,40 @@ int main() {
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
 
+    // Make a Genesis block
+
+    hash_info_needed genHash;
+    genHash.timestamp = 123445;
+    genHash.data = 0;
+    genHash.previous_hash = NULL;
+
+    char gen_hash; // genesis block hash stored here
+    strcpy(gen_hash, make_hash(&genHash));
+
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
         enum {ADD = 1, DISPLAY, MENU, QUIT};
         float data;
+        time_t timestamp;
 
         switch (choice)
         { 
             case ADD:
                 // Need a timestamp getter here
+                // timestamp = .....
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
                 printf("Enter data: ");
                 scanf(" %f", &data);
                 clear_buffer();
                 printf("Data: %.2f", data);
+
+                hash_info_needed newHash;
+                newHash.timestamp = timestamp;
+                newHash.data = data;
+                newHash.previous_hash = NULL;
+
+                make_hash(&newHash);
                 break;     
             case DISPLAY:
                 break;   
@@ -190,7 +209,7 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255])
+block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash) //char new_hash[255]
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
