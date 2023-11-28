@@ -31,10 +31,7 @@ int main() {
     block_node myBlock;
     myBlock.block_num = 1;
     myBlock.timestamp = 1234567890;
-    myBlock.data = malloc(sizeof(transaction_data));
-    myBlock.data->amount = 100.0;
-    strcpy(myBlock.data->sender_addy, "S1");
-    strcpy(myBlock.data->receiver_addy, "R1");
+    myBlock.data = 100.0;
     myBlock.previous_hash = NULL; 
     myBlock.next = NULL;
     
