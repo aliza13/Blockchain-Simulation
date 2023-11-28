@@ -79,7 +79,7 @@ char* make_hash(hash_info_needed *block) {
         goto Cleanup;
     }
 
-    wprintf(L"Size of Hash Object Buffer: %lu bytes\n", cbHashObject);
+    //wprintf(L"Size of Hash Object Buffer: %lu bytes\n", cbHashObject);
 
     // Allocate the hash object on the heap
     pbHashObject = (PBYTE)HeapAlloc(GetProcessHeap(), 0, cbHashObject);
