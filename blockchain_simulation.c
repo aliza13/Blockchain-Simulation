@@ -88,6 +88,8 @@ int main() {
                 newHash.previous_hash = NULL;
 
                 make_hash(&newHash);
+
+                // add_block();
                 break;     
             case DISPLAY:
                 break;   
