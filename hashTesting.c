@@ -122,7 +122,7 @@ Cleanup:
 int main() {
     hash_info_needed myBlock;
     myBlock.timestamp = 12345678910;
-    myBlock.data = 56.2;
+    myBlock.data = 5.2;
     myBlock.previous_hash = NULL;
     // create the hash and get it as a hexadecimal string
     char* hexHash = make_hash(&myBlock);
