@@ -27,6 +27,9 @@ typedef struct block_node {
 char* make_hash(hash_info_needed *block);
 block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255]);
 void show_menu(void);
+int clear_buffer(void);
+int get_int(const char *prompt);
+int get_float(const char *prompt);
 
 void print_block(const block_node *block) {
     printf("Timestamp: %ld\n", block->timestamp);
@@ -221,4 +224,66 @@ void show_menu(void)
     printf("*               3: Show Menu                   *\n");
     printf("*               4: Quit                        *\n");
     printf("************************************************\n");
+}
+
+int clear_buffer(void)
+{
+    int ch;
+    int count = 0;
+    while((ch = getchar()) != '\n' && ch != EOF)
+        ++count;
+    
+    return count;
+}
+
+int get_int(const char *prompt)
+{
+    int num;
+    int ret;
+    int count;
+
+    do
+    {
+        printf("%s", prompt);
+        ret = scanf("%d", &num);
+
+        /* Clear buffer */
+        count = clear_buffer();
+
+        /**
+         * If scanf() did not successfully read one integer
+         * or, if clear_buffer() reads at least one non-white character.
+         */
+        if (ret != 1 || count > 0)
+            printf("Invalid input! Please enter just one integer from 1 to 6.\n");
+
+    } while(ret != 1 || count != 0);
+
+    return num;
+}
+
+int get_float(const char *prompt)
+{
+    float num;
+    int ret;
+    int count;
+
+    do
+    {
+        printf("%s", prompt);
+        ret = scanf("%f", &num);
+
+        /* Clear buffer */
+        count = clear_buffer();
+
+        /**
+         * If scanf() did not successfully read one integer
+         * or, if clear_buffer() reads at least one non-white character.
+         */
+        if (ret != 1 || count > 0)
+            printf("Invalid input! Please enter just one integer from 1 to 6.\n");
+
+    } while(ret != 1 || count != 0);
+
+    return num;
 }
