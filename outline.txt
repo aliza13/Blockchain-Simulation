@@ -20,17 +20,21 @@ o Recursion (optional)
 Block strucutre- node within link list which contains a ptr to next block. Block num, timestamp time_t, int data, *previous_hash, hash[], struct block* next to point to next block in blockchain
 
 typedef struct block_node {
-    int block_num;
     time_t timestamp;
     float data; // Cee is currency, data is amount
     char *previous_hash;
-    char hash[65]; 
     struct block_node *next;
 } block_node;
 
 In main(), it will initialize the Cee blockchain and set the genesis block
-- Cee blockchain be a 2D array
-- 1 column
+- Cee blockchain be a 2D array with blockchain_data struct
+struct blockchain_data {
+    int block_num;
+    char hash[255]; // change [num] if needed
+    float data; // what data is going to be in here? should it be block_node data? 
+}
+
+- 2 columns to represent 1 block
 - each row holds block number, hash, block's data
 cee_blockchain[r][c] = {}
 
