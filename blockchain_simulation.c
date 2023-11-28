@@ -10,6 +10,7 @@ typedef struct block_node {
     time_t timestamp;
     float data; // Cee is currency, data is amount
     char *previous_hash;
+    char hash[255];
     struct block_node *next;
 } block_node;
 
