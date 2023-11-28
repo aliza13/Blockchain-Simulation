@@ -10,7 +10,6 @@ typedef struct block_node {
     time_t timestamp;
     float data; // Cee is currency, data is amount
     char *previous_hash;
-    char hash[255];
     struct block_node *next;
 } block_node;
 
@@ -42,7 +41,6 @@ add_block(block_node *head, time_t new_timestamp, float new_data, char *new_prev
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
-
     if (new_block)
     {
         /*Assign the block it's values*/
@@ -51,14 +49,12 @@ add_block(block_node *head, time_t new_timestamp, float new_data, char *new_prev
         // PREVIOUS HASH FIELD NEEDED
         // HASH FIELD NEEDED
         new_block->next = NULL;
-
         // If linked list is empty, the new block is the genesis block.
         if (head == NULL)
         {
             //new_block->previous_hash = NULL;
             return new_block;
         }
-
         // Otherwise, iterate through the chain and add the block at the end.
         else
         {
@@ -68,11 +64,9 @@ add_block(block_node *head, time_t new_timestamp, float new_data, char *new_prev
                 current = current->next;
             }
             current->next = new_block;
-
             return head;
         }
     }
-
     else
     {
         return NULL;
