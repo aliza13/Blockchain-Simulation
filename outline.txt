@@ -30,18 +30,24 @@ In main(), it will initialize the Cee blockchain and set the genesis block
 - Cee blockchain be a 2D array with blockchain_data struct
 struct blockchain_data {
     int block_num;
-    char hash[255]; // change [num] if needed
+    char hash[255]; // change [#] if needed
     float data; // what data is going to be in here? should it be block_node data? 
 }
 
-- 2 columns to represent 1 block
+- 2 columns to represent block num and 1 block's data
 - each row holds block number, hash, block's data
-cee_blockchain[r][c] = {}
+- array index will be block number = r + 1 
+cee_blockchain[r][2 columns] = {}
+
+for loop to iterate through all the rows setting 
+.block_num = r + 1
+.hash = hash_func()
+.data = get_data_fromLL()  
 
 make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
 
-add_block() func must add a block to the end of the list, add timestamp and increment block num, ptr 
+add_block() add a block to the end of the list, add timestamp and ptr 
 - use double ptr**(ptr that points to another ptr, holds addy of another ptr) to add to end of list
 - malloc(sizeof(block struct)) to allocate memory for new block
 
