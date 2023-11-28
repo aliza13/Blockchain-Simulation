@@ -42,7 +42,8 @@ int main() {
     myBlock.timestamp = 12345678910;
     myBlock.data = 5.2;
     myBlock.previous_hash = NULL;
-    // create the hash and get it as a hexadecimal string
+    
+    // create the hash and get it as a hexadecimal stringS
     char* hexHash = make_hash(&myBlock);
 
     // print hash to term
