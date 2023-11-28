@@ -9,7 +9,7 @@
 typedef struct block_node {
     int block_num;
     time_t timestamp;
-    int data; // Cee is currency, data is amount
+    float data; // Cee is currency, data is amount
     char *previous_hash;
     char hash[65]; 
     struct block_node *next;
@@ -27,9 +27,13 @@ void print_block(const block_node *block) {
 
 
 int main() {
+
+    // set genesis block to NULL values besides .next to point to 1st node
+
+
     // sample block for now
     block_node myBlock;
-    myBlock.block_num = 1;
+    myBlock.block_num = 2;
     myBlock.timestamp = 1234567890;
     myBlock.data = 100.0;
     myBlock.previous_hash = NULL; 

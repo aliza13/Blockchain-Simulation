@@ -6,9 +6,30 @@ Cee currency
 Link list to represent the blocks
 Genesis block (1)
 
-Block strucutre- nodes within a link list and ptr to next block. Block num, timestamp time_t, data[], previous_hash[], hash[], struct block* next to point to next block
+NEEDS: 
+C Language Features (70%):
+o #define macro -> constants
+o User IO and file IO -> make sure to read and write to a file 
+o 2-d array, array of pointers, array of 
+string
+o Dynamic memory management
+o Define a struct within a struct
+o Recursion (optional)
+-input validation
+
+Block strucutre- node within link list which contains a ptr to next block. Block num, timestamp time_t, int data, *previous_hash, hash[], struct block* next to point to next block in blockchain
+
+typedef struct block_node {
+    int block_num;
+    time_t timestamp;
+    int data; // Cee is currency, data is amount
+    char *previous_hash;
+    char hash[65]; 
+    struct block_node *next;
+} block_node;
 
 In main(), it will initialize the Cee blockchain and set the genesis block
+* should cee blockchain be a 2D array? 
 
 make_hash() create hash (random func or actually use a hashing algo)
 - SHA 256 using CNG- built in window files 
