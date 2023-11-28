@@ -11,7 +11,7 @@
 
 typedef struct hash_info_needed {
     time_t timestamp;
-    float data; // Cee is currency, data is amount
+    float data;
     char *previous_hash;
 } hash_info_needed;
 
