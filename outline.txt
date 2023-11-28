@@ -45,6 +45,7 @@ for loop to iterate through all the rows setting
 
 make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
+- documentation used: https://learn.microsoft.com/en-us/windows/win32/seccng/creating-a-hash-with-cng
 
 add_block() add a block to the end of the list, add timestamp and ptr 
 - use double ptr**(ptr that points to another ptr, holds addy of another ptr) to add to end of list
