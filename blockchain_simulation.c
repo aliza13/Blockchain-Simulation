@@ -53,6 +53,14 @@ int main() {
     char gen_hash; // genesis block hash stored here
     strcpy(gen_hash, make_hash(&genHash));
 
+    block_node gen_block;
+    gen_block.timestamp = NULL;
+    gen_block.data = 0;
+    gen_block.previous_hash = NULL;
+    gen_block.next = NULL;
+    
+     
+
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
