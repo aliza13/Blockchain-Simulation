@@ -47,7 +47,10 @@ make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
 - documentation used: https://learn.microsoft.com/en-us/windows/win32/seccng/creating-a-hash-with-cng
 
-add_block() add a block to the end of the list, add timestamp and ptr 
+add_block() adds a block to the end of the list
+- add timestamp  
+    * for local time: https://www.geeksforgeeks.org/time-h-localtime-function-in-c-with-examples/
+    * eth blocks show:  4 mins ago (Nov-28-2023 10:04:35 PM +UTC) format
 - use double ptr**(ptr that points to another ptr, holds addy of another ptr) to add to end of list
 - malloc(sizeof(block struct)) to allocate memory for new block
 
