@@ -5,6 +5,7 @@
 #include <time.h>
 #include <windows.h>
 #include <bcrypt.h>
+#include <stdbool.h>
 
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
@@ -35,6 +36,27 @@ void print_block(const block_node *block) {
 
 int main() {
 
+    printf("Welcome to the Blockchain Simulator!\n\n");
+    show_menu();
+
+    while (true)
+    {
+        int choice = get_int("\nWhat would you like to do? (Choose an option): ");
+        enum {ADD = 1, DISPLAY, MENU, QUIT};
+
+        switch (choice)
+        {
+            case ADD:
+                break;     
+            case DISPLAY:
+                break;   
+            case MENU:
+                show_menu();
+                break;
+            case QUIT:
+                break;
+        }
+    }
     // set genesis block to NULL values besides .next to point to 1st node
 
     // sample block for now
