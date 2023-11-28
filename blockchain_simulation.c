@@ -30,6 +30,7 @@ void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
 int get_float(const char *prompt);
+void quit(void);
 
 void print_block(const block_node *block) {
     printf("Timestamp: %ld\n", block->timestamp);
@@ -57,6 +58,8 @@ int main() {
                 show_menu();
                 break;
             case QUIT:
+                printf("Thanks, see you next time!");
+                quit();
                 break;
         }
     }
@@ -286,4 +289,9 @@ int get_float(const char *prompt)
     } while(ret != 1 || count != 0);
 
     return num;
+}
+
+void quit(void)
+{
+    exit(0);
 }
