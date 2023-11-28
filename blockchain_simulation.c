@@ -31,11 +31,9 @@ void print_block(const block_node *block) {
     printf("Previous Hash: %s\n", block->previous_hash);
 }
 
-
 int main() {
 
     // set genesis block to NULL values besides .next to point to 1st node
-
 
     // sample block for now
     hash_info_needed myBlock;
