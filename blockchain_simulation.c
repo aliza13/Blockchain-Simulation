@@ -30,6 +30,7 @@ void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
 int get_float(const char *prompt);
+// int get_time();
 void quit(void);
 
 void print_block(const block_node *block) {
@@ -42,6 +43,7 @@ int main() {
 
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
+    block_node *head = NULL;
 
     // Make a Genesis block
 
@@ -54,13 +56,14 @@ int main() {
     strcpy(gen_hash, make_hash(&genHash));
 
     block_node gen_block;
-    gen_block.timestamp = NULL;
+    gen_block.timestamp = 123445;
     gen_block.data = 0;
     gen_block.previous_hash = NULL;
     gen_block.next = NULL;
     
-     
-
+    // get_time();
+    block_node *gen_block = head;
+    
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
@@ -324,6 +327,24 @@ int get_float(const char *prompt)
 
     return num;
 }
+
+// int get_time()
+// {
+//     struct tm* local; 
+//     time_t t = time(NULL); 
+  
+//     // Get the localtime 
+//     local = localtime(&t); 
+  
+//     // time_t time = local;
+
+//     printf("Local time and date: %s\n", 
+//            asctime(local)); 
+    
+//     // printf("Local time and date: %s\n", 
+//     //        asctime(time)); 
+//     return 0; 
+// }
 
 void quit(void)
 {
