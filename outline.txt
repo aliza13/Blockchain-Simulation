@@ -22,16 +22,19 @@ Block strucutre- node within link list which contains a ptr to next block. Block
 typedef struct block_node {
     int block_num;
     time_t timestamp;
-    int data; // Cee is currency, data is amount
+    float data; // Cee is currency, data is amount
     char *previous_hash;
     char hash[65]; 
     struct block_node *next;
 } block_node;
 
 In main(), it will initialize the Cee blockchain and set the genesis block
-* should cee blockchain be a 2D array? 
+- Cee blockchain be a 2D array
+- 1 column
+- each row holds block number, hash, block's data
+cee_blockchain[r][c] = {}
 
-make_hash() create hash (random func or actually use a hashing algo)
+make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
 
 add_block() func must add a block to the end of the list, add timestamp and increment block num, ptr 
