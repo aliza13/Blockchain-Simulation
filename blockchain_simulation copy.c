@@ -5,7 +5,6 @@
 #include <time.h>
 #include <windows.h>
 #include <bcrypt.h>
-#include <stdbool.h>
 
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
@@ -25,8 +24,6 @@ typedef struct block_node {
 
 // void make_hash(block_node *block);
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255]);
-void show_menu(void);
 
 void print_block(const block_node *block) {
     printf("Timestamp: %ld\n", block->timestamp);
@@ -36,27 +33,6 @@ void print_block(const block_node *block) {
 
 int main() {
 
-    printf("Welcome to the Blockchain Simulator!\n\n");
-    show_menu();
-
-    while (true)
-    {
-        int choice = get_int("\nWhat would you like to do? (Choose an option): ");
-        enum {ADD = 1, DISPLAY, MENU, QUIT};
-
-        switch (choice)
-        {
-            case ADD:
-                break;     
-            case DISPLAY:
-                break;   
-            case MENU:
-                show_menu();
-                break;
-            case QUIT:
-                break;
-        }
-    }
     // set genesis block to NULL values besides .next to point to 1st node
 
     // sample block for now
@@ -177,48 +153,38 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255])
-{
-    // Create new block
-    block_node *new_block = malloc(sizeof(block_node));
-    if (new_block)
-    {
-        /*Assign the block it's values*/
-        new_block->timestamp = new_timestamp;
-        new_block->data = new_data;
-        // PREVIOUS HASH FIELD NEEDED
-        // HASH FIELD NEEDED
-        new_block->next = NULL;
-        // If linked list is empty, the new block is the genesis block.
-        if (head == NULL)
-        {
-            //new_block->previous_hash = NULL;
-            return new_block;
-        }
-        // Otherwise, iterate through the chain and add the block at the end.
-        else
-        {
-            block_node *current = head;
-            while (current->next != NULL)
-            {
-                current = current->next;
-            }
-            current->next = new_block;
-            return head;
-        }
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
-void show_menu(void)
-{
-    printf("************ Blockchain  Simulation ************\n");
-    printf("*               1: Add Block                   *\n");
-    printf("*               2: Display Block Info          *\n");
-    printf("*               3: Show Menu                   *\n");
-    printf("*               4: Quit                        *\n");
-    printf("************************************************\n");
-}
+// add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash, char new_hash[255])
+// {
+//     // Create new block
+//     block_node *new_block = malloc(sizeof(block_node));
+//     if (new_block)
+//     {
+//         /*Assign the block it's values*/
+//         new_block->timestamp = new_timestamp;
+//         new_block->data = new_data;
+//         // PREVIOUS HASH FIELD NEEDED
+//         // HASH FIELD NEEDED
+//         new_block->next = NULL;
+//         // If linked list is empty, the new block is the genesis block.
+//         if (head == NULL)
+//         {
+//             //new_block->previous_hash = NULL;
+//             return new_block;
+//         }
+//         // Otherwise, iterate through the chain and add the block at the end.
+//         else
+//         {
+//             block_node *current = head;
+//             while (current->next != NULL)
+//             {
+//                 current = current->next;
+//             }
+//             current->next = new_block;
+//             return head;
+//         }
+//     }
+//     else
+//     {
+//         return NULL;
+//     }
+// }
