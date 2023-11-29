@@ -30,14 +30,8 @@ void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
 int get_float(const char *prompt);
-// int get_time();
+void print_block(const block_node *block);
 void quit(void);
-
-void print_block(const block_node *block) {
-    printf("Timestamp: %ld\n", block->timestamp);
-    printf("Amount: %.2f\n", block->data);
-    printf("Previous Hash: %s\n", block->previous_hash);
-}
 
 int main() {
 
@@ -54,7 +48,7 @@ int main() {
 
     char gen_hash[255]; // genesis block hash stored here
     strcpy(gen_hash, make_hash(&genHash));
-
+    printf("Gen Hash: %s", gen_hash);
     block_node gen_block;
     strcpy(genHash.timestamp, "");
     gen_block.data = 0;
@@ -63,7 +57,11 @@ int main() {
     
     // get_time();
     // block_node *gen_block = head;
-    
+
+    char previous_hash[255];
+    strcpy(previous_hash, gen_hash);
+    printf("\nPrev Hash: %s", previous_hash);
+
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
@@ -101,7 +99,9 @@ int main() {
 
                 make_hash(&newHash);
 
-                // add_block();
+                add_block(head, current_time, data, previous_hash);
+
+                print_block(head);
                 break;     
             case DISPLAY:
                 break;   
@@ -241,10 +241,17 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
     if (new_block)
     {
         /*Assign the block it's values*/
-        // new_block->timestamp = new_timestamp;
+        strcpy(new_block->timestamp, new_timestamp);
+        printf("Block Time: %s", new_block->timestamp);
+
+
         new_block->data = new_data;
-        // PREVIOUS HASH FIELD NEEDED
-        // HASH FIELD NEEDED
+        printf("\nBlock Data: %f", new_block->data);
+
+        strcpy(new_block->previous_hash, new_previous_hash);
+        printf("\nBlock Prev Hash: %s", new_block->previous_hash);
+
+
         new_block->next = NULL;
         // If linked list is empty, the new block is the genesis block.
         if (head == NULL)
@@ -342,23 +349,11 @@ int get_float(const char *prompt)
     return num;
 }
 
-// int get_time()
-// {
-//     struct tm* local; 
-//     time_t t = time(NULL); 
-  
-//     // Get the localtime 
-//     local = localtime(&t); 
-  
-//     // time_t time = local;
-
-//     printf("Local time and date: %s\n", 
-//            asctime(local)); 
-    
-//     // printf("Local time and date: %s\n", 
-//     //        asctime(time)); 
-//     return 0; 
-// }
+void print_block(const block_node *block) {
+    printf("Timestamp: %ld\n", block->timestamp);
+    printf("Amount: %.2f\n", block->data);
+    printf("Previous Hash: %s\n", block->previous_hash);
+}
 
 void quit(void)
 {
