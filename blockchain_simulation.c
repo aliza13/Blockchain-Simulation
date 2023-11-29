@@ -90,6 +90,7 @@ int main() {
 
                 make_hash(&newHash);
 
+                // add_block();
                 break;     
             case DISPLAY:
                 break;   
