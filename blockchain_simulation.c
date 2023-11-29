@@ -77,6 +77,10 @@ int main() {
                 struct tm* local; 
                 time_t t = time(NULL); 
                 local = localtime(&t);
+
+                char current_time = asctime(local);
+
+                printf("%s", current_time);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
                 printf("Enter data: ");
                 scanf(" %f", &data);
