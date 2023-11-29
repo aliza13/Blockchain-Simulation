@@ -81,9 +81,9 @@ int main() {
                 // printf("%s", current_time);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
                 printf("Enter data: ");
-                scanf("%f", &data);
+                scanf(" %f", &data);
                 clear_buffer();
-                printf("\nData: %.2f", data);
+                printf("Data: %.2f", data);
 
                 hash_info_needed newHash;
                 strcpy(newHash.timestamp, current_time);
@@ -289,7 +289,11 @@ void show_menu(void)
 int clear_buffer(void)
 {
     int ch;
+    int count = 0;
     while((ch = getchar()) != '\n' && ch != EOF)
+        ++count;
+    
+    return count;
 }
 
 int get_int(const char *prompt)
