@@ -19,81 +19,81 @@ typedef struct hash_info_needed {
 typedef struct block_node {
     char timestamp[50];
     float data; // Cee is currency, data is amount
-    char *previous_hash;
+    char *previous_hash[255];
     struct block_node *next;
 } block_node;
 
 // void make_hash(block_node *block);
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, char new_timestamp, float new_data, char *new_previous_hash); //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp[50], float new_data, char *new_previous_hash[255]); //char new_hash[255]
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
-double get_float(const char *prompt);
+int get_float(const char *prompt);
 void print_block(const block_node *block);
 void quit(void);
 
 int main() {
+
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
 
-    // Make a Genesis block
-    hash_info_needed genHash;
-    strcpy(genHash.timestamp, "");
-    genHash.data = 0;
-    genHash.previous_hash = NULL;
+    char previous_hash[255] = "";
+    float data;
+    char timestamp;
+    time_t t;
+    char current_time[50];
+    char temp_hash[255] = "";
 
-    char gen_hash[255]; // genesis block hash stored here
-    strcpy(gen_hash, make_hash(&genHash));
-    // printf("Gen Hash: %s", gen_hash);
+    block_node *head_ptr = NULL;
 
-    block_node gen_block;
-    strcpy(genHash.timestamp, "");
-    gen_block.data = 0;
-    gen_block.previous_hash = NULL;
-    gen_block.next = NULL;
+    // Make the genesis block:
+    time(&t);
+    strcpy(current_time, ctime(&t));
+    head_ptr = add_block(head_ptr, current_time, 0, previous_hash);
+    hash_info_needed newHash;
+    strcpy(newHash.timestamp, current_time);
+    
+    newHash.data = data;
+    newHash.previous_hash = previous_hash;
 
-    char previous_hash[255];
-    strcpy(previous_hash, gen_hash);
-    // printf("\nPrev Hash: %s", previous_hash);
-
-    block_node *head_ptr = &gen_block; // head_ptr does not start pting NULL, it points to gen_block (a struct) addy
+    strcpy(temp_hash, make_hash(&newHash));
+    strcpy(previous_hash, temp_hash); 
 
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
         enum {ADD = 1, DISPLAY, MENU, QUIT};
-        float data;
-        time_t t;
-        char current_time[50];
         
         switch (choice)
         { 
             case ADD:
                 time(&t);
                 strcpy(current_time, ctime(&t));
-                // printf("%s", current_time);
 
-                data = get_float("Enter amount of Cee: ");
-                printf("Data: %.2f", data);
+                // printf("%s", current_time);
+                // data = get_float("Enter data: "); Didn't work how I wanted it to
+                printf("Enter data: ");
+                scanf(" %f", &data);
+                clear_buffer();
+                // printf("Data: %.2f", data);
 
                 hash_info_needed newHash;
                 strcpy(newHash.timestamp, current_time);
                 
                 newHash.data = data;
-                newHash.previous_hash = NULL;
+                newHash.previous_hash = previous_hash;
 
-                make_hash(&newHash);
+                strcpy(temp_hash, make_hash(&newHash));
+
+                //printf("Previous Hash: %s", previous_hash);
+
                 head_ptr = add_block(head_ptr, current_time, data, previous_hash);
-                strcpy(previous_hash, make_hash(&newHash)); // prev hash will have its hash
-
-                if (gen_block.next == NULL)
-                {
-                    gen_block.next = head_ptr;
-                }
                 
+                strcpy(previous_hash, temp_hash);              
                 break;     
             case DISPLAY:
+                print_block(head_ptr);
                 break;   
             case MENU:
                 show_menu();
@@ -103,24 +103,7 @@ int main() {
                 quit();
                 break;
         }
-    }
-    // set genesis block to NULL values besides .next to point to 1st node
-
-    // // sample block for now
-    // hash_info_needed myBlock;
-    // myBlock.timestamp = 12345678910;
-    // myBlock.data = 5.2;
-    // myBlock.previous_hash = NULL;
-    
-    // create the hash and get it as a hexadecimal stringS
-    // char* hexHash = make_hash(&myBlock);
-
-    // // print hash to term
-    // if (hexHash) {
-    //     printf("Hash: %s\n", hexHash);
-    //     HeapFree(GetProcessHeap(), 0, hexHash); // Free the memory allocated for the hexadecimal string
-    // }
-    
+    }    
     return 0;
 }
 
@@ -224,38 +207,47 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, char new_timestamp, float new_data, char *new_previous_hash) //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp[50], float new_data, char *new_previous_hash[255]) //char new_hash[255]
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
     if (new_block)
     {
         /*Assign the block it's values*/
-        strcpy(new_block->timestamp, new_timestamp);
-        printf("Block Time: %s", new_block->timestamp);
-
-        new_block->data = new_data;
-        printf("\nBlock Data: %f", new_block->data);
-
-        strcpy(new_block->previous_hash, new_previous_hash);
-        printf("\nBlock Prev Hash: %s", new_block->previous_hash);
-
-        new_block->next = NULL; // not pointing to a next block cuz doesn't exist 
-
-        // pt to beginning of LL with current
-        block_node *current = head; // ptr with type block_node init. w head addy
         
-        while (current->next != NULL)
+        //printf("\nNew Timestamp: %s", new_timestamp);
+        strcpy(new_block->timestamp, new_timestamp);
+        //printf("\nBlock Time: %s", new_block->timestamp);
+
+        //printf("\nNew Data: %f", new_data);
+        new_block->data = new_data;
+        //printf("\nBlock Data: %f", new_block->data);
+
+        //printf("\nNew Prev Hash: %s", new_previous_hash);
+        strcpy(new_block->previous_hash, new_previous_hash);
+        //printf("\nBlock Prev Hash: %s", new_block->previous_hash);
+
+        new_block->next = NULL;
+        // If linked list is empty, the new block is the genesis block.
+        if (head == NULL)
         {
-            current = current->next;
+            //new_block->previous_hash = NULL;
+            return new_block;
         }
-        // traverse through list ^^ then set the last block 
-        current->next = new_block;
-        return head;
+        //Otherwise, iterate through the chain and add the block at the end.
+        else
+        {
+            block_node *current = head;
+            while (current->next != NULL)
+            {
+                current = current->next;
+            }
+            current->next = new_block;
+            return head;
+        }
     }
     else
     {
-        printf("Memory malloc error.\n");
         return NULL;
     }
 }
@@ -306,7 +298,7 @@ int get_int(const char *prompt)
     return num;
 }
 
-double get_float(const char *prompt)
+int get_float(const char *prompt)
 {
     double num;
     int ret;
@@ -333,9 +325,18 @@ double get_float(const char *prompt)
 }
 
 void print_block(const block_node *block) {
-    printf("Timestamp: %ld\n", block->timestamp);
-    printf("Amount: %.2f\n", block->data);
-    printf("Previous Hash: %s\n", block->previous_hash);
+    
+    block_node *current = block;
+
+    if (!current)
+        puts("There are no blocks in the chain.");
+    
+    while (current != NULL)
+    {
+        printf("\nTimestamp:\t%s\nAmount:\t%f\nPrevious Hash:\t%s\n", current->timestamp, current->data, current->previous_hash);
+        current = current->next;
+    }
+    return;
 }
 
 void quit(void)
