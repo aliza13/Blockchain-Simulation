@@ -29,17 +29,15 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
-int get_float(const char *prompt);
+double get_float(const char *prompt);
 void print_block(const block_node *block);
 void quit(void);
 
 int main() {
-
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
 
     // Make a Genesis block
-
     hash_info_needed genHash;
     strcpy(genHash.timestamp, "");
     genHash.data = 0;
@@ -47,28 +45,25 @@ int main() {
 
     char gen_hash[255]; // genesis block hash stored here
     strcpy(gen_hash, make_hash(&genHash));
-    printf("Gen Hash: %s", gen_hash);
+    // printf("Gen Hash: %s", gen_hash);
+
     block_node gen_block;
     strcpy(genHash.timestamp, "");
     gen_block.data = 0;
     gen_block.previous_hash = NULL;
     gen_block.next = NULL;
-    
-    // get_time();
-    // block_node *gen_block = head;
 
     char previous_hash[255];
     strcpy(previous_hash, gen_hash);
-    printf("\nPrev Hash: %s", previous_hash);
+    // printf("\nPrev Hash: %s", previous_hash);
 
-    block_node *head_ptr = &gen_block;
+    block_node *head_ptr = &gen_block; // head_ptr does not start pting NULL, it points to gen_block (a struct) addy
 
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
         enum {ADD = 1, DISPLAY, MENU, QUIT};
         float data;
-        char timestamp;
         time_t t;
         char current_time[50];
         
@@ -77,14 +72,12 @@ int main() {
             case ADD:
                 time(&t);
                 strcpy(current_time, ctime(&t));
-
                 // printf("%s", current_time);
-                // data = get_float("Enter data: "); Didn't work how I wanted it to
-                printf("Enter data: ");
-                scanf(" %f", &data);
-                clear_buffer();
-                printf("Data: %.2f", data);
 
+                data = get_float("Enter amount of Cee: ");
+                printf("Data: %.2f", data);
+                clear_buffer();
+                
                 hash_info_needed newHash;
                 strcpy(newHash.timestamp, current_time);
                 
@@ -92,9 +85,7 @@ int main() {
                 newHash.previous_hash = NULL;
 
                 make_hash(&newHash);
-
                 add_block(head_ptr, current_time, data, previous_hash);
-
                 print_block(head_ptr);
 
                 if (gen_block.next == NULL)
@@ -322,7 +313,7 @@ int get_int(const char *prompt)
     return num;
 }
 
-int get_float(const char *prompt)
+double get_float(const char *prompt)
 {
     double num;
     int ret;
