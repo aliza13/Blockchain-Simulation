@@ -75,17 +75,10 @@ int main() {
         switch (choice)
         { 
             case ADD:
-                // struct tm* local; 
-                // time_t t = time(NULL); 
-                // local = localtime(&t);
-
-                
-                // strcpy(current_time, asctime(local));
-
                 time(&t);
                 strcpy(current_time, ctime(&t));
 
-                printf("%s", current_time);
+                // printf("%s", current_time);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
                 printf("Enter data: ");
                 scanf(" %f", &data);
