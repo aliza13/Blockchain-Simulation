@@ -3,13 +3,14 @@
   
 int main() 
 { 
-    struct tm* local; 
-    time_t t = time(NULL); 
-    local = localtime(&t);
+        struct tm* local; 
+        time_t t = time(NULL); 
+        local = localtime(&t);
 
-    char current_time = asctime(local);
+        char current_time[50];
+        strcpy(current_time, asctime(local));
 
-    printf("%s", current_time);
+        printf("%s", current_time);
 
     // printf("Local time and date: %s\n", 
     //        asctime(local)); 
