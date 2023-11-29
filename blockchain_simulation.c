@@ -76,7 +76,6 @@ int main() {
 
                 data = get_float("Enter amount of Cee: ");
                 printf("Data: %.2f", data);
-                clear_buffer();
 
                 hash_info_needed newHash;
                 strcpy(newHash.timestamp, current_time);
@@ -85,8 +84,9 @@ int main() {
                 newHash.previous_hash = NULL;
 
                 make_hash(&newHash);
-                add_block(head_ptr, current_time, data, previous_hash);
-                
+                head_ptr = add_block(head_ptr, current_time, data, previous_hash);
+                strcpy(previous_hash, make_hash(&newHash)); // prev hash will have its hash
+
                 if (gen_block.next == NULL)
                 {
                     gen_block.next = head_ptr;
@@ -227,7 +227,6 @@ Cleanup:
 block_node* add_block(block_node *head, char new_timestamp, float new_data, char *new_previous_hash) //char new_hash[255]
 {
     // Create new block
-    printf("Test");
     block_node *new_block = malloc(sizeof(block_node));
     if (new_block)
     {
@@ -241,28 +240,22 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
         strcpy(new_block->previous_hash, new_previous_hash);
         printf("\nBlock Prev Hash: %s", new_block->previous_hash);
 
+        new_block->next = NULL; // not pointing to a next block cuz doesn't exist 
 
-        new_block->next = NULL;
-        // // If linked list is empty, the new block is the genesis block.
-        // if (head == NULL)
-        // {
-        //     //new_block->previous_hash = NULL;
-        //     return new_block;
-        // }
-        // Otherwise, iterate through the chain and add the block at the end.
-        // else
-        //{
-            block_node *current = head;
-            while (current->next != NULL)
-            {
-                current = current->next;
-            }
-            current->next = new_block;
-            return head;
-        //}
+        // pt to beginning of LL with current
+        block_node *current = head; // ptr with type block_node init. w head addy
+        
+        while (current->next != NULL)
+        {
+            current = current->next;
+        }
+        // traverse through list ^^ then set the last block 
+        current->next = new_block;
+        return head;
     }
     else
     {
+        printf("Memory malloc error.\n");
         return NULL;
     }
 }
