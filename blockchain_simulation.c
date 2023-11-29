@@ -11,13 +11,13 @@
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
 
 typedef struct hash_info_needed {
-    char timestamp;
+    char timestamp[50];
     float data;
     char *previous_hash;
 } hash_info_needed;
 
 typedef struct block_node {
-    char timestamp;
+    char timestamp[50];
     float data; // Cee is currency, data is amount
     char *previous_hash;
     struct block_node *next;
@@ -48,15 +48,15 @@ int main() {
     // Make a Genesis block
 
     hash_info_needed genHash;
-    genHash.timestamp = "1234567";
+    strcpy(genHash.timestamp, '\0');
     genHash.data = 0;
     genHash.previous_hash = NULL;
 
-    char gen_hash; // genesis block hash stored here
-    // strcpy(gen_hash, make_hash(&genHash));
+    char gen_hash[255]; // genesis block hash stored here
+    strcpy(gen_hash, make_hash(&genHash));
 
     block_node gen_block;
-    gen_block.timestamp = "1234567";
+    strcpy(genHash.timestamp, '\0');
     gen_block.data = 0;
     gen_block.previous_hash = NULL;
     gen_block.next = NULL;
@@ -78,7 +78,8 @@ int main() {
                 time_t t = time(NULL); 
                 local = localtime(&t);
 
-                char current_time = asctime(local);
+                char current_time[50];
+                strcpy(current_time, asctime(local));
 
                 printf("%s", current_time);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
@@ -88,7 +89,8 @@ int main() {
                 printf("Data: %.2f", data);
 
                 hash_info_needed newHash;
-                newHash.timestamp = timestamp;
+                strcpy(newHash.timestamp, current_time);
+                
                 newHash.data = data;
                 newHash.previous_hash = NULL;
 
@@ -109,20 +111,20 @@ int main() {
     }
     // set genesis block to NULL values besides .next to point to 1st node
 
-    // sample block for now
-    hash_info_needed myBlock;
-    myBlock.timestamp = 12345678910;
-    myBlock.data = 5.2;
-    myBlock.previous_hash = NULL;
+    // // sample block for now
+    // hash_info_needed myBlock;
+    // myBlock.timestamp = 12345678910;
+    // myBlock.data = 5.2;
+    // myBlock.previous_hash = NULL;
     
     // create the hash and get it as a hexadecimal stringS
-    char* hexHash = make_hash(&myBlock);
+    // char* hexHash = make_hash(&myBlock);
 
-    // print hash to term
-    if (hexHash) {
-        printf("Hash: %s\n", hexHash);
-        HeapFree(GetProcessHeap(), 0, hexHash); // Free the memory allocated for the hexadecimal string
-    }
+    // // print hash to term
+    // if (hexHash) {
+    //     printf("Hash: %s\n", hexHash);
+    //     HeapFree(GetProcessHeap(), 0, hexHash); // Free the memory allocated for the hexadecimal string
+    // }
     
     return 0;
 }
@@ -234,7 +236,7 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
     if (new_block)
     {
         /*Assign the block it's values*/
-        new_block->timestamp = new_timestamp;
+        // new_block->timestamp = new_timestamp;
         new_block->data = new_data;
         // PREVIOUS HASH FIELD NEEDED
         // HASH FIELD NEEDED
