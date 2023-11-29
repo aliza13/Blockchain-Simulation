@@ -11,13 +11,13 @@
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
 
 typedef struct hash_info_needed {
-    time_t timestamp;
+    char timestamp;
     float data;
     char *previous_hash;
 } hash_info_needed;
 
 typedef struct block_node {
-    time_t timestamp;
+    char timestamp;
     float data; // Cee is currency, data is amount
     char *previous_hash;
     struct block_node *next;
@@ -25,7 +25,7 @@ typedef struct block_node {
 
 // void make_hash(block_node *block);
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash); //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp, float new_data, char *new_previous_hash); //char new_hash[255]
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -48,28 +48,28 @@ int main() {
     // Make a Genesis block
 
     hash_info_needed genHash;
-    genHash.timestamp = 123445;
+    genHash.timestamp = "1234567";
     genHash.data = 0;
     genHash.previous_hash = NULL;
 
     char gen_hash; // genesis block hash stored here
-    strcpy(gen_hash, make_hash(&genHash));
+    // strcpy(gen_hash, make_hash(&genHash));
 
     block_node gen_block;
-    gen_block.timestamp = 123445;
+    gen_block.timestamp = "1234567";
     gen_block.data = 0;
     gen_block.previous_hash = NULL;
     gen_block.next = NULL;
     
     // get_time();
-    block_node *gen_block = head;
+    // block_node *gen_block = head;
     
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
         enum {ADD = 1, DISPLAY, MENU, QUIT};
         float data;
-        time_t timestamp;
+        char timestamp;
 
         switch (choice)
         { 
@@ -227,7 +227,7 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, time_t new_timestamp, float new_data, char *new_previous_hash) //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp, float new_data, char *new_previous_hash) //char new_hash[255]
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
