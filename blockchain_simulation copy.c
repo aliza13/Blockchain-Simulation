@@ -33,6 +33,12 @@ double get_float(const char *prompt);
 void print_block(block_node *block);
 void quit(void);
 
+void store_in_blockchain(block_node Cee_Blockchain[][], int block_count, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]) {
+    strcpy(Cee_Blockchain[block_count][0].timestamp, new_timestamp);
+    Cee_Blockchain[block_count][0].data = new_data;
+    // new hash &n prev hash
+}
+
 int main() {
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
@@ -45,7 +51,9 @@ int main() {
     char temp_hash[255] = "";
 
     block_node *head_ptr = NULL;
-
+    // ea row is ONE block
+    block_node Cee_Blockchain[1000][1]; // ea element in 2D is type b_n
+    int block_count = 0; 
     // Make the genesis block:
     time(&t);
     strcpy(current_time, ctime(&t));
@@ -57,6 +65,7 @@ int main() {
 
     strcpy(temp_hash, make_hash(&newHash));
     head_ptr = add_block(head_ptr, current_time, 0, temp_hash, previous_hash);
+
     strcpy(previous_hash, temp_hash); 
 
     while (true)
@@ -88,7 +97,8 @@ int main() {
                 //printf("Previous Hash: %s", previous_hash);
 
                 head_ptr = add_block(head_ptr, current_time, data, temp_hash, previous_hash);
-                
+                // store_in_blockchain(Cee_Blockchain, block_count, current_time, data, temp_hash, previous_hash);
+                block_count++;
                 strcpy(previous_hash, temp_hash);              
                 break;     
             case DISPLAY:

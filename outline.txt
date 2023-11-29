@@ -7,7 +7,6 @@ Link list to represent the blocks
 Genesis block (1)
 
 NEEDS: 
-C Language Features (70%):
 o #define macro -> constants
 o User IO and file IO -> make sure to read and write to a file 
 o 2-d array, array of pointers, array of 
@@ -29,15 +28,11 @@ typedef struct block_node {
 
 In main(), it will initialize the Cee blockchain and set the genesis block
 - Cee blockchain be a 2D array with blockchain_data struct
-struct blockchain_data {
-    int block_num;
-    float data; // what data is going to be in here? should it be block_node data? should be struct block_node type?
-}
 
-- 2 columns to represent block num and 1 block's data
-- each row holds block number, block's data
+- 1 column to represent 1 block's data
+- each row holds block number(index), block's data
 - array index will be block number = r + 1 
-cee_blockchain[r][2 columns] = {}
+cee_blockchain[big num to initialize how many blocks can fitr][1 column] = {}
 
 for loop to iterate through all the rows setting 
 .block_num = r + 1
@@ -51,7 +46,6 @@ add_block() adds a block to the end of the list
 - add timestamp  
     * for local time: https://www.geeksforgeeks.org/time-h-localtime-function-in-c-with-examples/
     * eth blocks show:  4 mins ago (Nov-28-2023 10:04:35 PM +UTC) format
-- use double ptr**(ptr that points to another ptr, holds addy of another ptr) to add to end of list
 - malloc(sizeof(block struct)) to allocate memory for new block
 
 error_block() turns out there is an error within the block, so remove block and reconnect link, update ptrs
