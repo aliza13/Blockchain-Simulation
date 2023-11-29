@@ -1,7 +1,11 @@
 #include <stdio.h> 
 #include <time.h> 
 #include <string.h>
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> d93e65b99c66198684e332c1d75831a77f49f58f
 int main() 
 { 
         struct tm* local; 
