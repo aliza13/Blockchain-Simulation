@@ -12,34 +12,32 @@
 
 typedef struct hash_info_needed {
     char timestamp[50];
-    float data;
+    double data;
     char *previous_hash;
 } hash_info_needed;
 
 typedef struct block_node {
     char timestamp[50];
-    float data; // Cee is currency, data is amount
+    double data; // Cee is currency, data is amount
     char *previous_hash[255];
     struct block_node *next;
 } block_node;
 
-// void make_hash(block_node *block);
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, char new_timestamp[50], float new_data, char *new_previous_hash[255]); //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char *new_previous_hash[255]); //char new_hash[255]
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
-int get_float(const char *prompt);
+double get_float(const char *prompt);
 void print_block(const block_node *block);
 void quit(void);
 
 int main() {
-
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
 
     char previous_hash[255] = "";
-    float data;
+    double data;
     char timestamp;
     time_t t;
     char current_time[50];
@@ -72,10 +70,10 @@ int main() {
                 strcpy(current_time, ctime(&t));
 
                 // printf("%s", current_time);
-                // data = get_float("Enter data: "); Didn't work how I wanted it to
-                printf("Enter data: ");
-                scanf(" %f", &data);
-                clear_buffer();
+                data = get_float("Enter data: ");
+                // printf("Enter data: ");
+                // scanf(" %f", &data);
+                // clear_buffer();
                 // printf("Data: %.2f", data);
 
                 hash_info_needed newHash;
@@ -207,7 +205,7 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, char new_timestamp[50], float new_data, char *new_previous_hash[255]) //char new_hash[255]
+block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char *new_previous_hash[255]) //char new_hash[255]
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
@@ -298,7 +296,7 @@ int get_int(const char *prompt)
     return num;
 }
 
-int get_float(const char *prompt)
+double get_float(const char *prompt)
 {
     double num;
     int ret;
