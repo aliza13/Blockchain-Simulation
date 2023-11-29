@@ -70,7 +70,7 @@ int main() {
                 strcpy(current_time, ctime(&t));
 
                 // printf("%s", current_time);
-                data = get_float("Enter data: ");
+                data = get_float("Enter amount of Cee: ");
                 // printf("Enter data: ");
                 // scanf(" %f", &data);
                 // clear_buffer();
