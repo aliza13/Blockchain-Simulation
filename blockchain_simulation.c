@@ -48,7 +48,7 @@ int main() {
     // Make a Genesis block
 
     hash_info_needed genHash;
-    strcpy(genHash.timestamp, '\0');
+    strcpy(genHash.timestamp, "");
     genHash.data = 0;
     genHash.previous_hash = NULL;
 
@@ -56,7 +56,7 @@ int main() {
     strcpy(gen_hash, make_hash(&genHash));
 
     block_node gen_block;
-    strcpy(genHash.timestamp, '\0');
+    strcpy(genHash.timestamp, "");
     gen_block.data = 0;
     gen_block.previous_hash = NULL;
     gen_block.next = NULL;
