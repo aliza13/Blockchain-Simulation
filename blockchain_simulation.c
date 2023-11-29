@@ -37,7 +37,6 @@ int main() {
 
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
-    block_node *head = NULL;
 
     // Make a Genesis block
 
@@ -61,6 +60,8 @@ int main() {
     char previous_hash[255];
     strcpy(previous_hash, gen_hash);
     printf("\nPrev Hash: %s", previous_hash);
+
+    block_node *head_ptr = &gen_block;
 
     while (true)
     {
@@ -99,9 +100,15 @@ int main() {
 
                 make_hash(&newHash);
 
-                add_block(head, current_time, data, previous_hash);
+                add_block(head_ptr, current_time, data, previous_hash);
 
-                print_block(head);
+                print_block(head_ptr);
+
+                if (gen_block.next == NULL)
+                {
+                    gen_block.next = head_ptr;
+                }
+                
                 break;     
             case DISPLAY:
                 break;   
@@ -244,7 +251,6 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
         strcpy(new_block->timestamp, new_timestamp);
         printf("Block Time: %s", new_block->timestamp);
 
-
         new_block->data = new_data;
         printf("\nBlock Data: %f", new_block->data);
 
@@ -253,15 +259,15 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
 
 
         new_block->next = NULL;
-        // If linked list is empty, the new block is the genesis block.
-        if (head == NULL)
-        {
-            //new_block->previous_hash = NULL;
-            return new_block;
-        }
+        // // If linked list is empty, the new block is the genesis block.
+        // if (head == NULL)
+        // {
+        //     //new_block->previous_hash = NULL;
+        //     return new_block;
+        // }
         // Otherwise, iterate through the chain and add the block at the end.
-        else
-        {
+        // else
+        //{
             block_node *current = head;
             while (current->next != NULL)
             {
@@ -269,7 +275,7 @@ block_node* add_block(block_node *head, char new_timestamp, float new_data, char
             }
             current->next = new_block;
             return head;
-        }
+        //}
     }
     else
     {
