@@ -77,7 +77,7 @@ int main() {
                 data = get_float("Enter amount of Cee: ");
                 printf("Data: %.2f", data);
                 clear_buffer();
-                
+
                 hash_info_needed newHash;
                 strcpy(newHash.timestamp, current_time);
                 
@@ -86,13 +86,7 @@ int main() {
 
                 make_hash(&newHash);
                 add_block(head_ptr, current_time, data, previous_hash);
-<<<<<<< HEAD
-                print_block(head_ptr);
-=======
-
-                // print_block(head_ptr);
->>>>>>> 7a052810e9eba8849219a94ecb20336a7fb92630
-
+                
                 if (gen_block.next == NULL)
                 {
                     gen_block.next = head_ptr;
