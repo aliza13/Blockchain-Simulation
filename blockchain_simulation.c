@@ -74,8 +74,9 @@ int main() {
         switch (choice)
         { 
             case ADD:
-                // Need a timestamp getter here
-                // timestamp = .....
+                struct tm* local; 
+                time_t t = time(NULL); 
+                local = localtime(&t);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
                 printf("Enter data: ");
                 scanf(" %f", &data);
