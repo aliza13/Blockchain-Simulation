@@ -70,16 +70,21 @@ int main() {
         enum {ADD = 1, DISPLAY, MENU, QUIT};
         float data;
         char timestamp;
-
+        time_t t;
+        char current_time[50];
+        
         switch (choice)
         { 
             case ADD:
-                struct tm* local; 
-                time_t t = time(NULL); 
-                local = localtime(&t);
+                // struct tm* local; 
+                // time_t t = time(NULL); 
+                // local = localtime(&t);
 
-                char current_time[50];
-                strcpy(current_time, asctime(local));
+                
+                // strcpy(current_time, asctime(local));
+
+                time(&t);
+                strcpy(current_time, ctime(&t));
 
                 printf("%s", current_time);
                 // data = get_float("Enter data: "); Didn't work how I wanted it to
