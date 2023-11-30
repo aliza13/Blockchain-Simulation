@@ -21,8 +21,33 @@ typedef struct block_node {
     double data; // Cee is currency, data is amount
     char hash[255];
     char previous_hash[255];
-    struct block_node *next;
+    struct block_node *next
 } block_node;
+
+/**
+ * Portforlio Courses: dynamically allocate array? Increase the size of a dynamic 2d array
+ * 1 Level create a row of blockchian_node pointers (dynamic)
+ * 2 Level make each pointers point to a row of block chain node (dynamic)
+ * 
+ * int rows, int cols // rows can be dynamically allocated, cols is fixed size for all rows
+ * 
+ * rows = 10;   // malloc() an array of 10 blockchain_node pointers
+ * cols = 10;   // malloc() an array of 10 blockchain_node
+ * 
+ * rows += new_rows;  // if the blockcahin nodes number exceeedd rows * cols
+ *                    // we need to allocate a new row
+ *                    // realloc() rows 10 -> 20, blockchian_node pointers
+ *                    // For the new row, malloc an array of 10 blockchain_node
+ * 1. malloc(rows * sizeof(blockchain_pointer *))
+ * 2. for (int i = 0; i < rows; ++i)
+ *           malloc(columns * sizeof(blockchin_node))
+ * 
+ * To access the information in each blockchain_node
+ * BN **BN_pptr p9oint to the begining of this 2d array.
+ * 
+ * BN_pptr[0][0].timestamp;
+*/
+
 
 char* make_hash(hash_info_needed *block);
 block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]);
@@ -33,9 +58,18 @@ double get_float(const char *prompt);
 void print_block(block_node *block);
 void quit(void);
 
-void store_in_blockchain(block_node Cee_Blockchain[][], int block_count, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]) {
+/* 1. Consider using a more general hashing function that works for all platforms?
+ * 2. Need to pass in the size for the column (second index) when passing a 2D array to a funciton.
+      block_node (cee_Blockchain[][size],...)
+ */
+void store_in_blockchain(block_node Cee_Blockchain[][], 
+                         int block_count, char new_timestamp[50],
+                         double new_data, char new_hash[255],
+                         char new_previous_hash[255]) 
+{
+/* 3. Consider using static varaible count? static count; */
     strcpy(Cee_Blockchain[block_count][0].timestamp, new_timestamp);
-    Cee_Blockchain[block_count][0].data = new_data;
+    Cee_Blockchain[block_count][?].data = new_data;
     // new hash &n prev hash
 }
 
@@ -51,6 +85,13 @@ int main() {
     char temp_hash[255] = "";
 
     block_node *head_ptr = NULL;
+
+     /* Maybe create a dynamic 2d array to store Blocknode, and the corresponding hash ? 
+     
+     Dyanically allocate 
+     blaockchain[][]
+     */
+
     // ea row is ONE block
     block_node Cee_Blockchain[1000][1]; // ea element in 2D is type b_n
     int block_count = 0; 
