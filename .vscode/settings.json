@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "windows.h": "c",
-        "bcrypt.h": "c"
+        "bcrypt.h": "c",
+        "xutility": "c"
     }
 }

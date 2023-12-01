@@ -39,13 +39,16 @@ typedef struct block_node {
  *                    // realloc() rows 10 -> 20, blockchian_node pointers
  *                    // For the new row, malloc an array of 10 blockchain_node
  * 1. malloc(rows * sizeof(blockchain_pointer *))
- * 2. for (int i = 0; i < rows; ++i)
- *           malloc(columns * sizeof(blockchin_node))
+ * 2. for (int i = 0; i < rows; ++i) so we can modify them
+ *           malloc(columns * sizeof(blockchin_node)) !!
  * 
  * To access the information in each blockchain_node
- * BN **BN_pptr p9oint to the begining of this 2d array.
+ * BN **BN_pptr point to the begining of this 2d array.
  * 
  * BN_pptr[0][0].timestamp;
+ * then free memory by
+ * for (int i = 0; i < var rows; i++) {free(array[i])}
+ * free array;
 */
 
 char* make_hash(hash_info_needed *block);

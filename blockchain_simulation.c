@@ -7,6 +7,7 @@
 #include <bcrypt.h>
 #include <stdbool.h>
 #include <wchar.h>
+#include <math.h>
 
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
@@ -27,6 +28,9 @@ typedef struct block_node {
 
 char* make_hash(hash_info_needed *block);
 block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]);
+void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols);
+// TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
+void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count);
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -35,62 +39,60 @@ void print_block(block_node *block);
 void quit(void);
 
 int main() {
+
+    char timestamp[50];
+    double data;
+    char temp_hash[255] = "";
+    char previous_hash[255] = "";
+    time_t t;
+
     printf("Welcome to the Blockchain Simulator!\n\n");
     show_menu();
 
-    char previous_hash[255] = "";
-    double data;
-    char timestamp;
-    time_t t;
-    char current_time[50];
-    char temp_hash[255] = "";
-
     block_node *head_ptr = NULL;
+    block_node **block_node_ptrs = NULL; // a pointer to the array of block_nodes, I think
+    int rows = 0;
+    int cols = 10; // so 10 b_n's can fit
+    int block_count = 1; // gen block automatically gets made 
 
     // Make the genesis block:
     time(&t);
-    strcpy(current_time, ctime(&t));
-    hash_info_needed newHash;
-    strcpy(newHash.timestamp, current_time);
-    
-    newHash.data = data;
-    newHash.previous_hash = previous_hash;
+    strcpy(timestamp, ctime(&t)); // get time and store it in ts variable
 
+    hash_info_needed newHash;
+    strcpy(newHash.timestamp, timestamp);
+    newHash.data = data; // wouldnt this be 0.00 or when declaring double data put 0.00
+    newHash.previous_hash = previous_hash; // should be NULL ? or empty string
     strcpy(temp_hash, make_hash(&newHash));
-    head_ptr = add_block(head_ptr, current_time, 0, temp_hash, previous_hash);
+    // hash for gen is made, now let the head point to gen block (1)
+    head_ptr = add_block(head_ptr, timestamp, 0, temp_hash, previous_hash);
     strcpy(previous_hash, temp_hash); 
 
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
-        enum {ADD = 1, DISPLAY, MENU, QUIT};
+        enum {ADD = 1, DISPLAY, MENU, FINALIZE_THE_BLOCKS, QUIT};
         
         switch (choice)
         { 
             case ADD:
                 time(&t);
-                strcpy(current_time, ctime(&t));
-
-                // printf("%s", current_time);
+                strcpy(timestamp, ctime(&t));
+                // printf("%s", timestamp);
                 data = get_float("Enter amount of Cee: ");
-                // printf("Enter data: ");
-                // scanf(" %f", &data);
-                // clear_buffer();
                 // printf("Data: %.2f", data);
-
                 hash_info_needed newHash;
-                strcpy(newHash.timestamp, current_time);
-                
+                strcpy(newHash.timestamp, timestamp);
                 newHash.data = data;
                 newHash.previous_hash = previous_hash;
 
                 strcpy(temp_hash, make_hash(&newHash));
-
                 //printf("Previous Hash: %s", previous_hash);
 
-                head_ptr = add_block(head_ptr, current_time, data, temp_hash, previous_hash);
-                
-                strcpy(previous_hash, temp_hash);              
+                head_ptr = add_block(head_ptr, timestamp, data, temp_hash, previous_hash);
+                strcpy(previous_hash, temp_hash);       
+                block_count++; 
+                // print_block(head_ptr);      
                 break;     
             case DISPLAY:
                 print_block(head_ptr);
@@ -98,12 +100,26 @@ int main() {
             case MENU:
                 show_menu();
                 break;
+            case FINALIZE_THE_BLOCKS:
+                allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
+                propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
+                // printf("\n2D Array\n");
+                // for (int i = 0; i < rows; i++) {
+                //     for (int j = 0; j < cols; j++) {
+                //         printf("Row %d, Col %d: \nTimestamp: %s, Data: %.2f, \nPrevious Hash: %s, \nHash: %s\n",
+                //             i, j, block_node_ptrs[i][j].timestamp,
+                //             block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash,
+                //             block_node_ptrs[i][j].hash);
+                //     }
+                // }
+                break;
             case QUIT:
                 printf("Thanks, see you next time!");
                 quit();
                 break;
         }
     }    
+
     return 0;
 }
 
@@ -213,21 +229,18 @@ block_node* add_block(block_node *head, char new_timestamp[50], double new_data,
     block_node *new_block = malloc(sizeof(block_node));
     if (new_block)
     {
-        /*Assign the block it's values*/
-        
-        //printf("\nNew Timestamp: %s", new_timestamp);
         strcpy(new_block->timestamp, new_timestamp);
-        //printf("\nBlock Time: %s", new_block->timestamp);
+        printf("\nBlock Time: %s", new_block->timestamp);
 
-        //printf("\nNew Data: %f", new_data);
+        printf("\nNew Data: %f", new_data);
         new_block->data = new_data;
-        //printf("\nBlock Data: %f", new_block->data);
+        printf("\nBlock Data: %f", new_block->data);
 
         strcpy(new_block->hash, new_hash);
 
-        //printf("\nNew Prev Hash: %s", new_previous_hash);
+        printf("\nNew Prev Hash: %s", new_previous_hash);
         strcpy(new_block->previous_hash, new_previous_hash);
-        //printf("\nBlock Prev Hash: %s", new_block->previous_hash);
+        printf("\nBlock Prev Hash: %s", new_block->previous_hash);
 
         new_block->next = NULL;
         // If linked list is empty, the new block is the genesis block.
@@ -254,13 +267,48 @@ block_node* add_block(block_node *head, char new_timestamp[50], double new_data,
     }
 }
 
+void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols) {
+    int block_count = 0;
+    block_node *current_ptr = head_ptr;
+
+    while (current_ptr != NULL && block_count < rows * cols) {
+        int row = block_count / cols; // to get position in 2D array
+        int col = block_count % cols;
+
+        if (current_ptr != NULL) { // copy values from current block node to 2D array
+            strcpy(block_node_ptrs[row][col].timestamp, current_ptr->timestamp);
+            block_node_ptrs[row][col].data = current_ptr->data;
+            strcpy(block_node_ptrs[row][col].previous_hash, current_ptr->previous_hash);
+            strcpy(block_node_ptrs[row][col].previous_hash, current_ptr->previous_hash);
+        } else {
+            printf("Error propagating values in table.\n");
+        }
+
+        current_ptr = current_ptr->next;
+        block_count++;
+    }
+}
+
+void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count) {
+    int new_amount_of_rows = ceil((double)block_count / cols); // calc how many rows are needed and then round up
+
+    *block_node_ptrs = realloc(*block_node_ptrs, sizeof(block_node *) * new_amount_of_rows); // for ptrs array, use realloc or malloc ?
+
+    for (int i = *rows; i < new_amount_of_rows; i++) { // to loop through each index of ptrs to b_n's and allocate memory
+        (*block_node_ptrs)[i] = malloc(sizeof(block_node) * cols);
+    }
+
+    *rows = new_amount_of_rows;
+}
+
 void show_menu(void)
 {
     printf("************ Blockchain  Simulation ************\n");
     printf("*               1: Add Block                   *\n");
     printf("*               2: Display Block Info          *\n");
     printf("*               3: Show Menu                   *\n");
-    printf("*               4: Quit                        *\n");
+    printf("*               4: Finalize Added Blocks       *\n");
+    printf("*               5: Quit                        *\n");
     printf("************************************************\n");
 }
 
