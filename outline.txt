@@ -42,6 +42,10 @@ add_block() adds a block to the end of the list
     * eth blocks show:  4 mins ago (Nov-28-2023 10:04:35 PM +UTC) format
 - malloc(sizeof(block struct)) to allocate memory for new block
 
+free_linked_list()
+free 2D array
+just loop through array / LL and free memory with free()
+
 error_block() turns out there is an error within the block, so remove block and reconnect link, update ptrs
 - use two pointers, one to keep track of current and the other for previous 
 

@@ -1,5 +1,11 @@
 # Blockchain-Simulation
 
+## Project Description
+
+This program simulates a basic blockchain structure, drawing inspiration from Bitcoin and Ethereum blockchains. Each block contains essential information such as a hash, timestamp, and a reference to the previous block's hash.
+
+**Cee Blockchain**
+
 ## Running the Blockchain Simulation Program
 
 To compile and run the blockchain simulation program, follow these steps:
