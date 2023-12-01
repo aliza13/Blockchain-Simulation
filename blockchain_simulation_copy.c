@@ -48,7 +48,6 @@ typedef struct block_node {
  * BN_pptr[0][0].timestamp;
 */
 
-
 char* make_hash(hash_info_needed *block);
 block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]);
 void show_menu(void);
@@ -58,7 +57,7 @@ double get_float(const char *prompt);
 void print_block(block_node *block);
 void quit(void);
 
-/* 1. Consider using a more general hashing function that works for all platforms?
+/* 
  * 2. Need to pass in the size for the column (second index) when passing a 2D array to a funciton.
       block_node (cee_Blockchain[][size],...)
  */
