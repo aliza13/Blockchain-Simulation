@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <bcrypt.h>
 #include <stdbool.h>
+#include <wchar.h>
 
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
@@ -19,18 +20,18 @@ typedef struct hash_info_needed {
 typedef struct block_node {
     char timestamp[50];
     double data; // Cee is currency, data is amount
-    char *hash[255];
-    char *previous_hash[255];
+    char hash[255];
+    char previous_hash[255];
     struct block_node *next;
 } block_node;
 
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char *new_hash[255], char *new_previous_hash[255]);
+block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]);
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
 double get_float(const char *prompt);
-void print_block(const block_node *block);
+void print_block(block_node *block);
 void quit(void);
 
 int main() {
@@ -206,7 +207,7 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char *new_hash[255], char *new_previous_hash[255])
+block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255])
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
@@ -325,7 +326,7 @@ double get_float(const char *prompt)
     return num;
 }
 
-void print_block(const block_node *block) {
+void print_block(block_node *block) {
     
     block_node *current = block;
 
