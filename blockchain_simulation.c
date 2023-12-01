@@ -10,23 +10,25 @@
 
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
+#define HASH_SIZE 255
+#define TIMESTAMP_SIZE 64
 
 typedef struct hash_info_needed {
-    char timestamp[50];
+    char timestamp[TIMESTAMP_SIZE];
     double data;
     char *previous_hash;
 } hash_info_needed;
 
 typedef struct block_node {
-    char timestamp[50];
+    char timestamp[TIMESTAMP_SIZE];
     double data; // Cee is currency, data is amount
-    char hash[255];
-    char previous_hash[255];
+    char hash[HASH_SIZE];
+    char previous_hash[HASH_SIZE];
     struct block_node *next;
 } block_node;
 
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255]);
+block_node* add_block(block_node *head, char new_timestamp[TIMESTAMP_SIZE], double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE]);
 void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols);
 // TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
 void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count);
@@ -41,10 +43,10 @@ void quit(void);
 
 int main() {
 
-    char timestamp[50];
+    char timestamp[TIMESTAMP_SIZE];
     double data;
-    char temp_hash[255] = "";
-    char previous_hash[255] = "";
+    char temp_hash[HASH_SIZE] = "";
+    char previous_hash[HASH_SIZE] = "";
     time_t t;
 
     printf("Welcome to the Blockchain Simulator!\n\n");
@@ -93,7 +95,7 @@ int main() {
                 head_ptr = add_block(head_ptr, timestamp, data, temp_hash, previous_hash);
                 strcpy(previous_hash, temp_hash);       
                 block_count++; 
-                // print_block(head_ptr);      
+                print_block(head_ptr);      
                 break;     
             case DISPLAY:
                 print_block(head_ptr);
@@ -104,15 +106,15 @@ int main() {
             case FINALIZE_THE_BLOCKS:
                 allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
                 propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
-                // printf("\n2D Array\n");
-                // for (int i = 0; i < rows; i++) {
-                //     for (int j = 0; j < cols; j++) {
-                //         printf("Row %d, Col %d: \nTimestamp: %s, Data: %.2f, \nPrevious Hash: %s, \nHash: %s\n",
-                //             i, j, block_node_ptrs[i][j].timestamp,
-                //             block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash,
-                //             block_node_ptrs[i][j].hash);
-                //     }
-                // }
+                printf("\n2D Array\n");
+                for (int i = 0; i < rows; i++) {
+                    for (int j = 0; j < cols; j++) {
+                        printf("Row %d, Col %d: \nTimestamp: %s Data: %.2f, \nPrevious Hash: %s, \nHash: %s\n",
+                            i, j, block_node_ptrs[i][j].timestamp,
+                            block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash,
+                            block_node_ptrs[i][j].hash);
+                    }
+                }
 
                 // NEED to write to CSV before freeing memory
                 free_linked_list_memory(head_ptr);
@@ -228,24 +230,24 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, char new_timestamp[50], double new_data, char new_hash[255], char new_previous_hash[255])
+block_node* add_block(block_node *head, char new_timestamp[TIMESTAMP_SIZE], double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE])
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
     if (new_block)
     {
         strcpy(new_block->timestamp, new_timestamp);
-        printf("\nBlock Time: %s", new_block->timestamp);
+        // printf("\nBlock Time: %s", new_block->timestamp);
 
-        printf("\nNew Data: %f", new_data);
+        // printf("\nNew Data: %f", new_data);
         new_block->data = new_data;
-        printf("\nBlock Data: %f", new_block->data);
+        // printf("\nBlock Data: %f", new_block->data);
 
         strcpy(new_block->hash, new_hash);
 
-        printf("\nNew Prev Hash: %s", new_previous_hash);
+        // printf("\nNew Prev Hash: %s", new_previous_hash);
         strcpy(new_block->previous_hash, new_previous_hash);
-        printf("\nBlock Prev Hash: %s", new_block->previous_hash);
+        // printf("\nBlock Prev Hash: %s", new_block->previous_hash);
 
         new_block->next = NULL;
         // If linked list is empty, the new block is the genesis block.
@@ -284,7 +286,7 @@ void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, i
             strcpy(block_node_ptrs[row][col].timestamp, current_ptr->timestamp);
             block_node_ptrs[row][col].data = current_ptr->data;
             strcpy(block_node_ptrs[row][col].previous_hash, current_ptr->previous_hash);
-            strcpy(block_node_ptrs[row][col].previous_hash, current_ptr->previous_hash);
+            strcpy(block_node_ptrs[row][col].hash, current_ptr->hash);
         } else {
             printf("Error propagating values in table.\n");
         }
