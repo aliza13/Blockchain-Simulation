@@ -1,4 +1,3 @@
-/* This program */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,6 +30,8 @@ block_node* add_block(block_node *head, char new_timestamp[50], double new_data,
 void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols);
 // TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
 void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count);
+void free_linked_list_memory(block_node *head);
+void free_2D_array_memory(block_node ***block_node_ptrs, int rows);
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -112,6 +113,10 @@ int main() {
                 //             block_node_ptrs[i][j].hash);
                 //     }
                 // }
+
+                // NEED to write to CSV before freeing memory
+                free_linked_list_memory(head_ptr);
+                free_2D_array_memory(&block_node_ptrs, rows);
                 break;
             case QUIT:
                 printf("Thanks, see you next time!");
@@ -299,6 +304,25 @@ void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols
     }
 
     *rows = new_amount_of_rows;
+}
+
+void free_linked_list_memory(block_node *head) {
+    block_node *current_ptr = head;
+
+    while (current_ptr != NULL) {
+        block_node *temp_ptr = current_ptr;
+        current_ptr = current_ptr->next; // move ptr to next
+        free(temp_ptr);
+    }
+}
+
+void free_2D_array_memory(block_node ***block_node_ptrs, int rows) {
+    // triple pointer points to the 2D array of b_n (double pointer already)
+    for (int i = 0; i < rows; i++) {
+        free((*block_node_ptrs)[i]); // free each row
+    }
+
+    free(*block_node_ptrs); // free array of row ptrs
 }
 
 void show_menu(void)
