@@ -46,6 +46,16 @@ free_linked_list()
 free 2D array
 just loop through array / LL and free memory with free()
 
+add to csv file ()
+- add what was saved in 2D array to a csv file
+- 1 line = 1 block and its info
+- CSV file
+
+read from csv file()
+- or link the user a text file and they can read it to see the blockchain 
+- user should not be able to mess with CSV file, no removing blocks. Cee blockchain is permanent after
+the finalize blocks case
+
 error_block() turns out there is an error within the block, so remove block and reconnect link, update ptrs
 - use two pointers, one to keep track of current and the other for previous 
 

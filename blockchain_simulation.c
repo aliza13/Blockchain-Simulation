@@ -115,7 +115,6 @@ int main() {
                             block_node_ptrs[i][j].hash);
                     }
                 }
-
                 // NEED to write to CSV before freeing memory
                 free_linked_list_memory(head_ptr);
                 free_2D_array_memory(&block_node_ptrs, rows);
