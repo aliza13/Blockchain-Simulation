@@ -414,6 +414,103 @@ void print_block(block_node *block) {
     return;
 }
 
+void save_file(/* PASS IN POINTER TO 2D ARRAY OR THE ARRAY ITSELF? (OR HEAD POINTER)*/)
+{
+    FILE *output_file;
+
+    // Open the file to write to
+    output_file = fopen("blockchain_simulation_records.csv", "w" /* might want 'a' for append?*/);
+
+    if (!output_file)
+    {
+        printf("Error saving to file.");
+        return;
+    }
+
+    // Option 1: Save from Array
+    /*
+    for (i = 0; i < array_length ; ++i)
+    {
+        fprintf("GET THE DATA FROM THE ARRAY AND PUT IT IN HERE?\n");
+        // Might need more than this or might need a nested for loop
+    }    
+    
+    */
+
+    // Option 2: Save from Linked list
+    /*
+    while (current != NULL)
+        {
+            fprintf(output_file, "%s %f %s %s\n", current->timestamp, current->data, current->hash, current->previous_hash);
+            current = current->next;
+        }
+    */
+
+   fclose(output_file);
+   return;
+}
+
+block_node* read_file(block_node* head_ptr/*HEAD POINTER?*/)
+{
+    FILE *input_file;
+
+    // We might only want to get last node in the csv to have a starting point to continue the chain
+
+    // Open the file
+    input_file = fopen("blockchain_simulation_records.csv", "r");
+
+    // If file doesn't exist
+    if (!input_file)
+    {
+        printf("Error reading file.");
+        return head_ptr;
+    }
+
+    // Get the needed data from the csv
+
+    // Option 1: Get only the last block to continue the chain 
+
+    /*
+        **NOT REALLY SURE HOW TO DO THIS ONE...? Maybe you have a better idea of this than i do    
+    */
+
+    // Option 2: Load the entirety of the chain back into the program to continue making the chain
+    /*
+        // Make Placeholder vars to hold the info
+        char timestamp[TIMESTAMP_SIZE];
+        double data;
+        char hash[HASH_SIZE];
+        char previous_hash[HASH_SIZE];
+
+        //Store file contents in a variable
+        char text[SOME BUFFER SIZE BIG ENOUGH TO HOLD ALL THE DATA];
+
+        while(fgets(text, BUFFER_SIZE, input_file))
+        {
+            // Iterate through file contents
+
+            // Scan 4 elements per line and stop at commas (csv should help with this)
+            if (sscanf(text, "%s, %lf, %s, %s", timestamp, &data, hash, previous_hash) == 4)
+            {
+                // Create a new block with the read info
+                head_ptr = add_block(head, timestamp, data, hash, previous_hash);
+            }
+            else
+            {
+                printf("Error: Incorrect format in line '%s'\n", text)
+                fclose(input_file);
+                return head_ptr;
+            }
+
+            fclose(input_file);
+
+            printf("Blockchain simulation record successfully loaded.");
+            return head_ptr;
+        }
+    
+    */
+}
+
 void quit(void)
 {
     exit(0);
