@@ -12,6 +12,7 @@
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
 #define HASH_SIZE 255
 #define TIMESTAMP_SIZE 64
+#define COLS 10
 
 typedef struct hash_info_needed {
     char timestamp[TIMESTAMP_SIZE];
@@ -34,6 +35,7 @@ void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, i
 void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count);
 void free_linked_list_memory(block_node *head);
 void free_2D_array_memory(block_node ***block_node_ptrs, int rows);
+void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char *filename);
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -64,7 +66,7 @@ int main() {
 
     hash_info_needed newHash;
     strcpy(newHash.timestamp, timestamp);
-    newHash.data = data; // wouldnt this be 0.00 or when declaring double data put 0.00
+    newHash.data = data; 
     newHash.previous_hash = previous_hash; // should be NULL ? or empty string
     strcpy(temp_hash, make_hash(&newHash));
     // hash for gen is made, now let the head point to gen block (1)
@@ -106,16 +108,9 @@ int main() {
             case FINALIZE_THE_BLOCKS:
                 allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
                 propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
-                printf("\n2D Array\n");
-                for (int i = 0; i < rows; i++) {
-                    for (int j = 0; j < cols; j++) {
-                        printf("Row %d, Col %d: \nTimestamp: %s Data: %.2f, \nPrevious Hash: %s, \nHash: %s\n",
-                            i, j, block_node_ptrs[i][j].timestamp,
-                            block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash,
-                            block_node_ptrs[i][j].hash);
-                    }
-                }
-                // NEED to write to CSV before freeing memory
+
+                write_bc_data_to_csv(block_node_ptrs, rows, cols, "cee_blockchain_record.csv");
+                
                 free_linked_list_memory(head_ptr);
                 free_2D_array_memory(&block_node_ptrs, rows);
                 break;
@@ -414,40 +409,32 @@ void print_block(block_node *block) {
     return;
 }
 
-void save_file(/* PASS IN POINTER TO 2D ARRAY OR THE ARRAY ITSELF? (OR HEAD POINTER)*/)
-{
-    FILE *output_file;
+void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char *filename) {
+    FILE *blockchain_file = fopen(filename, "a");
 
-    // Open the file to write to
-    output_file = fopen("blockchain_simulation_records.csv", "w" /* might want 'a' for append?*/);
-
-    if (!output_file)
-    {
+    if (!blockchain_file) {
         printf("Error saving to file.");
         return;
     }
 
-    // Option 1: Save from Array
-    /*
-    for (i = 0; i < array_length ; ++i)
-    {
-        fprintf("GET THE DATA FROM THE ARRAY AND PUT IT IN HERE?\n");
-        // Might need more than this or might need a nested for loop
-    }    
-    
-    */
+    int block_number = 0;
 
-    // Option 2: Save from Linked list
-    /*
-    while (current != NULL)
-        {
-            fprintf(output_file, "%s %f %s %s\n", current->timestamp, current->data, current->hash, current->previous_hash);
-            current = current->next;
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            block_number++;
+
+            if ((strcmp(block_node_ptrs[i][j].hash, "") == 0) && j != 0) {
+                break;  
+            }
+
+            else if (block_node_ptrs[i][j].data != 0.00 || i == 0) {
+                fprintf(blockchain_file, "%d,", block_number);
+                fprintf(blockchain_file, "%s,%.2f,%s,%s\n", block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
+            }
         }
-    */
+    }
 
-   fclose(output_file);
-   return;
+    fclose(blockchain_file);
 }
 
 block_node* read_file(block_node* head_ptr/*HEAD POINTER?*/)
@@ -457,7 +444,7 @@ block_node* read_file(block_node* head_ptr/*HEAD POINTER?*/)
     // We might only want to get last node in the csv to have a starting point to continue the chain
 
     // Open the file
-    input_file = fopen("blockchain_simulation_records.csv", "r");
+    input_file = fopen("cee_blockchain_record.csv", "r");
 
     // If file doesn't exist
     if (!input_file)

@@ -31,6 +31,15 @@ cee_blockchain[big num to initialize how many blocks can fitr][1 column] = {}
 for loop to iterate through all the rows setting 
 .block_num = r + 1
 .data = get_data_fromLL()  
+// printf("\n2D Array\n");
+// for (int i = 0; i < rows; i++) {
+//     for (int j = 0; j < cols; j++) {
+//         printf("Row %d, Col %d: \nTimestamp: %s Data: %.2f, \nPrevious Hash: %s, \nHash: %s\n",
+//             i, j, block_node_ptrs[i][j].timestamp,
+//             block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash,
+//             block_node_ptrs[i][j].hash);
+//     }
+// }
 
 make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
