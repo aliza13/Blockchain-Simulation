@@ -65,15 +65,15 @@ int main() {
     int block_count = 0;
 
     // head_ptr = read_csv(head_ptr); 
-    read_csv_and_print();
+    // read_csv_and_print();
     if (head_ptr == NULL) {
     // Make the genesis block:
     time(&t);
     strcpy(timestamp, ctime(&t)); // get time and store it in ts variable
 
     char* new_line_ptr = strchr(timestamp, '\n'); // Get rid of \n in the timestamp
-    if (new_line_ptr)
-         *new_line_ptr = '\0';
+                if (new_line_ptr)
+                    *new_line_ptr = '\0';
 
     hash_info_needed newHash;
     strcpy(newHash.timestamp, timestamp);
@@ -88,7 +88,7 @@ int main() {
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
-        enum {ADD = 1, DISPLAY, MENU, FINALIZE_THE_BLOCKS, QUIT};
+        enum {ADD = 1, DISPLAY, MENU, FINALIZE_THE_BLOCKS, READ_FILE, QUIT};
         
         switch (choice)
         { 
@@ -100,6 +100,7 @@ int main() {
                 if (new_line_ptr)
                     *new_line_ptr = '\0';
 
+                // printf("timestamp: %s test", timestamp);
                 // printf("%s", timestamp);
                 data = get_float("Enter amount of Cee: ");
                 // printf("Data: %.2f", data);
@@ -130,10 +131,13 @@ int main() {
                 allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
                 propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
 
-                write_bc_data_to_csv(block_node_ptrs, rows, cols, "cee_blockchain_record.csv");
+                write_bc_data_to_csv(block_node_ptrs, rows, cols, "cee_blockchain_record_2.csv");
                 
                 free_linked_list_memory(head_ptr);
                 free_2D_array_memory(&block_node_ptrs, rows);
+                break;
+            case READ_FILE:
+                head_ptr = read_csv(head_ptr);
                 break;
             case QUIT:
                 printf("Thanks, see you next time!");
@@ -449,8 +453,8 @@ void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char
             }
 
             else if (block_node_ptrs[i][j].data != 0.00 || i == 0) {
-                fprintf(blockchain_file, "%d,", block_number);
-                fprintf(blockchain_file, "%s,%.2f,%s,%s\n", block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
+                // fprintf(blockchain_file, "%d,", block_number);
+                fprintf(blockchain_file, "%d,%s,%.2f,%s,%s\n", block_number, block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
             }
         }
     }
@@ -459,7 +463,7 @@ void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char
 }
 
 block_node* read_csv(block_node* head_ptr) {
-    FILE* blockchain_file = fopen("cee_blockchain_record.csv", "r");
+    FILE* blockchain_file = fopen("cee_blockchain_record_2.csv", "r");
 
     if (!blockchain_file) {
         printf("Error reading file.\n");
@@ -469,12 +473,22 @@ block_node* read_csv(block_node* head_ptr) {
     char line[CSV_LINE_SIZE];
 
     while (fgets(line, CSV_LINE_SIZE, blockchain_file) != NULL) {
+        char block_number_str[30];
         int block_number;
         char timestamp[TIMESTAMP_SIZE];
+        char data_str[30];
         double data;
+        char *data_str_ptr;
         char hash[HASH_SIZE];
         char previous_hash[HASH_SIZE];
     // each thing is a string rn so need to convert to correct data type (impossible literally impossible)
+        sscanf("%[^,] , %[^,] , %[^,] , %[^,] , %[^,]", block_number_str, timestamp, data_str, previous_hash, hash);
+
+        data = strtod(data_str, &data_str_ptr);
+
+        block_number = atoi(block_number_str);
+        printf("Block str: %s, Data Str: %s", block_number_str, data_str);
+        printf("Block num: %d, Block data: %lf\n", block_number, data);
     }
     fclose(blockchain_file);
     return head_ptr;

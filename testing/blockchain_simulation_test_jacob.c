@@ -71,10 +71,6 @@ int main() {
     time(&t);
     strcpy(timestamp, ctime(&t)); // get time and store it in ts variable
 
-    char* new_line_ptr = strchr(timestamp, '\n'); // Get rid of \n in the timestamp
-    if (new_line_ptr)
-         *new_line_ptr = '\0';
-
     hash_info_needed newHash;
     strcpy(newHash.timestamp, timestamp);
     newHash.data = data; 
@@ -95,11 +91,6 @@ int main() {
             case ADD:
                 time(&t);
                 strcpy(timestamp, ctime(&t));
-
-                char* new_line_ptr = strchr(timestamp, '\n'); // Get rid of \n in the timestamp
-                if (new_line_ptr)
-                    *new_line_ptr = '\0';
-
                 // printf("%s", timestamp);
                 data = get_float("Enter amount of Cee: ");
                 // printf("Data: %.2f", data);
@@ -130,7 +121,7 @@ int main() {
                 allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
                 propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
 
-                write_bc_data_to_csv(block_node_ptrs, rows, cols, "cee_blockchain_record.csv");
+                write_bc_data_to_csv(block_node_ptrs, rows, cols, "cee_blockchain_record_2.csv");
                 
                 free_linked_list_memory(head_ptr);
                 free_2D_array_memory(&block_node_ptrs, rows);
@@ -449,8 +440,8 @@ void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char
             }
 
             else if (block_node_ptrs[i][j].data != 0.00 || i == 0) {
-                fprintf(blockchain_file, "%d,", block_number);
-                fprintf(blockchain_file, "%s,%.2f,%s,%s\n", block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
+                // fprintf(blockchain_file, "%d,", block_number);
+                fprintf(blockchain_file, "%d,%s,%.2f,%s,%s\n", block_number, block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
             }
         }
     }
