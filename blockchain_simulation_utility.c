@@ -110,6 +110,18 @@ Cleanup:
     return hexHash;
 }
 
+/**
+ * Creates a new block to add to the blockchain and puts it at the end of the chain.
+ * 
+ * @param head A pointer to the head of the linked list.
+ * @param block_number The number of the block in the chain.
+ * @param new_timestamp The current time when the block was created.
+ * @param new_data The amount of Cee the block will hold.
+ * @param new_hash The block's uniquie hash identifier.
+ * @param new_previous_hash The unique hash identifier of the previous block in the chain.
+ * 
+ * @return      A pointer to the head of the linked list; NULL if memory allocation fails.
+*/
 block_node* add_block(block_node *head, int block_number, char new_timestamp[TIMESTAMP_SIZE], 
                       double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE])
 {
@@ -151,6 +163,7 @@ block_node* add_block(block_node *head, int block_number, char new_timestamp[TIM
 }
 
 void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols) {
+    // TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
     int block_count = 0;
     block_node *current_ptr = head_ptr;
 
@@ -203,6 +216,9 @@ void free_2D_array_memory(block_node ***block_node_ptrs, int rows) {
     free(*block_node_ptrs); // free array of row ptrs
 }
 
+/**
+ * Displays the menu for the user by printing to terminal.
+*/
 void show_menu(void)
 {
     printf("************ Blockchain  Simulation ************\n");
@@ -210,11 +226,16 @@ void show_menu(void)
     printf("*               2: Display Block Info          *\n");
     printf("*               3: Show Menu                   *\n");
     printf("*               4: Save and Quit               *\n");
-    printf("*               5: Load a '.csv' file          *\n");
+    printf("*               5: Load a '.csv' File          *\n");
     printf("*               6: Quit                        *\n");
     printf("************************************************\n");
 }
 
+/**
+ * Clears the input buffer. Function taken from the one we made in class.
+ * 
+ * @return      An int representing the number of characters counted.
+*/
 int clear_buffer(void)
 {
     int ch;
@@ -225,6 +246,14 @@ int clear_buffer(void)
     return count;
 }
 
+/**
+ * Prompts the user for an integer. Function taken from the one we made in class.
+ * 
+ * @param prompt A pointer to the string prompting the user for input.
+ * 
+ * @return      A number (int) that the user input.
+ * 
+*/
 int get_int(const char *prompt)
 {
     int num;
@@ -251,6 +280,13 @@ int get_int(const char *prompt)
     return num;
 }
 
+/**
+ * Prompts the user for a double. Function is a modified version of get_int() from class.
+ * 
+ * @param prompt A pointer to the string prompting the user for input.
+ * 
+ * @return      A number (double) that the user input.
+*/
 double get_float(const char *prompt)
 {
     double num;
@@ -266,17 +302,23 @@ double get_float(const char *prompt)
         count = clear_buffer();
 
         /**
-         * If scanf() did not successfully read one integer
+         * If scanf() did not successfully read one double
          * or, if clear_buffer() reads at least one non-white character.
          */
         if (ret != 1 || count > 0)
-            printf("Invalid input! Please enter just one integer from 1 to 6.\n");
+            printf("Invalid input! Please enter just one amount (in Cee).\n");
 
     } while(ret != 1 || count != 0);
 
     return num;
 }
 
+/**
+ * Iterates through a linked list, printing each element's information until there are no more 
+ * blocks in the chain. If there are no blocks in the chain, print an error message.
+ * 
+ * @param block A pointer to the head of the linked list.
+*/
 void print_block(block_node *block) {
     
     block_node *current = block;
@@ -323,6 +365,15 @@ void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char
     fclose(blockchain_file);
 }
 
+/**
+ * Opens a file named 'cee_blockchain_record.csv'. If the file is successfully
+ * read, the file is parsed through line by line and each line's info is used to re-create the
+ * blockchain in the linked list. If the file cannot be read, an error message is shown.
+ * 
+ * @param head_ptr A pointer to the head of the linked list.
+ * 
+ * @return         A pointer to the head of the linked list. 
+*/
 block_node* read_csv(block_node* head_ptr) {
     FILE* blockchain_file = fopen("cee_blockchain_record.csv", "r");
 
@@ -348,11 +399,6 @@ block_node* read_csv(block_node* head_ptr) {
         read = sscanf(csv_contents,
                       "%d,%64[^,],%lf,%255[^,],%255[^,]\n",
                         &block_number, timestamp, &data, previous_hash, hash);
-        
-        // TESTING CODE:
-        // printf("\nRead: %d\n", read);
-        // printf("Block num: %d\nTimestamp: %s\nData: %lf\nPrevious Hash: %s\nHash: %s",
-        //         block_number, timestamp, data, previous_hash, hash); 
 
         if (read == 5) // If 5 elements were successfully read, create the block using that info
         {   
