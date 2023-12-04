@@ -2,6 +2,7 @@
     "files.associations": {
         "windows.h": "c",
         "bcrypt.h": "c",
-        "xutility": "c"
+        "xutility": "c",
+        "blockchain_simulation.h": "c"
     }
 }
