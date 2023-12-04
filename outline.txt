@@ -41,6 +41,22 @@ for loop to iterate through all the rows setting
 //     }
 // }
 
+ * rows += new_rows;  // if the blockcahin nodes number exceeedd rows * cols
+ *                    // we need to allocate a new row
+ *                    // realloc() rows 10 -> 20, blockchian_node pointers
+ *                    // For the new row, malloc an array of 10 blockchain_node
+ * 1. malloc(rows * sizeof(blockchain_pointer *))
+ * 2. for (int i = 0; i < rows; ++i) so we can modify them
+ *           malloc(columns * sizeof(blockchin_node)) !!
+ * 
+ * To access the information in each blockchain_node
+ * BN **BN_pptr point to the begining of this 2d array.
+ * 
+ * BN_pptr[0][0].timestamp;
+ * then free memory by
+ * for (int i = 0; i < var rows; i++) {free(array[i])}
+ * free array;
+
 make_hash() create hash (use a hashing algo)
 - SHA 256 using CNG- built in window files 
 - documentation used: https://learn.microsoft.com/en-us/windows/win32/seccng/creating-a-hash-with-cng
@@ -65,7 +81,9 @@ read from csv file()
 - user should not be able to mess with CSV file, no removing blocks. Cee blockchain is permanent after
 the finalize blocks case
 
+block_info() get block info and print to terminal
+
+
+Potential additions: 
 error_block() turns out there is an error within the block, so remove block and reconnect link, update ptrs
 - use two pointers, one to keep track of current and the other for previous 
-
-block_info() get block info and print to terminal
