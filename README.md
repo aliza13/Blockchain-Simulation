@@ -15,7 +15,7 @@ To compile and run the blockchain simulation program, follow these steps:
 2. Run the following command to compile the program:
 
     ```bash
-    gcc -o blockchain_simulation blockchain_simulation.c -lbcrypt
+    gcc -o blockchain_simulation .\blockchain_simulation.c .\blockchain_simulation_utility.c -lbcrypt
     ```
 
     This command uses the GNU Compiler Collection (`gcc`) to compile the source file `blockchain_simulation.c` and links it with the bcrypt library (`-lbcrypt`). The resulting executable will be named `blockchain_simulation`.

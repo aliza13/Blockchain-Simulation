@@ -25,6 +25,7 @@ int main() {
     int rows = 0;
     int cols = 10; 
     int block_count = 0;
+    bool csv_loaded = false;
 
     while (true)
     {
@@ -34,6 +35,13 @@ int main() {
         switch (choice)
         { 
             case ADD:
+
+                if (fileExists("cee_blockchain_record.csv") && csv_loaded == false) {
+                    printf("Error: 'cee_blockchain_record.csv' found. "
+                           "Please load data from the CSV file before adding a block.\n");
+                    break;
+                }
+
                 time(&t);
                 strcpy(timestamp, ctime(&t)); // Get the current time
 
@@ -92,6 +100,12 @@ int main() {
                 quit();
                 break;
             case READ_FILE:
+                if (!fileExists("cee_blockchain_record.csv")) {
+                    printf("Error: 'cee_blockchain_record.csv' not found in the project directory. "
+                            "Please add a block or save block information.\n");
+                    break;
+                }
+
                 head_ptr = read_csv(head_ptr);
                 block_node *current = head_ptr;
                 while(current->next != NULL) // Move to the end of the list to link the next block added by user
@@ -101,10 +115,11 @@ int main() {
                 strcpy(previous_hash, current->hash);
                 block_count = current->block_number;
 
+                csv_loaded = true;
                 printf("Blockchain sucessfully imported from 'cee_blockchain_record.csv'.\n");
                 break;
             case QUIT:
-                printf("Thanks, see you next time!\n");
+                printf("Program exited.\n");
                 quit();
                 break;
         }

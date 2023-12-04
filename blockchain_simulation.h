@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdbool.h>
+
 #define NT_SUCCESS(Status) (((NTSTATUS)(Status)) >= 0) // returns true if >= 0
 #define STATUS_UNSUCCESSFUL ((NTSTATUS)0xC0000001L) // error code
 #define HASH_SIZE 255
@@ -32,6 +34,7 @@ void free_linked_list_memory(block_node *head);
 void free_2D_array_memory(block_node ***block_node_ptrs, int rows);
 void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char *filename);
 block_node* read_csv(block_node* head_ptr);
+bool fileExists(char *fileName);
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);

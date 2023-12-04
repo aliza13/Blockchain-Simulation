@@ -3,6 +3,7 @@
         "windows.h": "c",
         "bcrypt.h": "c",
         "xutility": "c",
-        "blockchain_simulation.h": "c"
+        "blockchain_simulation.h": "c",
+        "stdbool.h": "c"
     }
 }

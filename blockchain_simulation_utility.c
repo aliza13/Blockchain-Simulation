@@ -375,6 +375,15 @@ block_node* read_csv(block_node* head_ptr) {
     return head_ptr;
 }
 
+bool fileExists(char *fileName) {
+    FILE *blockchain_file = fopen(fileName, "r");
+    if (blockchain_file) {
+        fclose(blockchain_file);
+        return true;
+    }
+    return false;
+}
+
 void quit(void)
 {
     exit(0);
