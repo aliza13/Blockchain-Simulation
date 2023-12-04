@@ -31,7 +31,8 @@ typedef struct block_node {
 } block_node;
 
 char* make_hash(hash_info_needed *block);
-block_node* add_block(block_node *head, int block_number, char new_timestamp[TIMESTAMP_SIZE], double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE]);
+block_node* add_block(block_node *head, int block_number, char new_timestamp[TIMESTAMP_SIZE], 
+                      double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE]);
 void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols);
 // TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
 void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count);
@@ -39,7 +40,6 @@ void free_linked_list_memory(block_node *head);
 void free_2D_array_memory(block_node ***block_node_ptrs, int rows);
 void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char *filename);
 block_node* read_csv(block_node* head_ptr);
-void read_csv_and_print();
 void show_menu(void);
 int clear_buffer(void);
 int get_int(const char *prompt);
@@ -52,7 +52,7 @@ int main() {
     char timestamp[TIMESTAMP_SIZE];
     double data;
     char temp_hash[HASH_SIZE] = "";
-    char previous_hash[HASH_SIZE] = "";
+    char previous_hash[HASH_SIZE] = " ";
     time_t t;
 
     printf("Welcome to the Blockchain Simulator!\n\n");
@@ -64,69 +64,61 @@ int main() {
     int cols = 10; // so 10 b_n's can fit
     int block_count = 0;
 
-    // head_ptr = read_csv(head_ptr); 
-    read_csv_and_print();
-    if (head_ptr == NULL) {
-    // Make the genesis block:
-    time(&t);
-    strcpy(timestamp, ctime(&t)); // get time and store it in ts variable
-
-    char* new_line_ptr = strchr(timestamp, '\n'); // Get rid of \n in the timestamp
-    if (new_line_ptr)
-         *new_line_ptr = '\0';
-
-    hash_info_needed newHash;
-    strcpy(newHash.timestamp, timestamp);
-    newHash.data = data; 
-    newHash.previous_hash = previous_hash; // should be NULL ? or empty string
-    strcpy(temp_hash, make_hash(&newHash));
-    block_count++;
-    head_ptr = add_block(head_ptr, block_count, timestamp, 0, temp_hash, previous_hash);
-    strcpy(previous_hash, temp_hash);
-    }
-
     while (true)
     {
         int choice = get_int("\nWhat would you like to do? (Choose an option): ");
-        enum {ADD = 1, DISPLAY, MENU, FINALIZE_THE_BLOCKS, QUIT};
+        enum {ADD = 1, DISPLAY, MENU, SAVE_AND_QUIT, READ_FILE, QUIT};
         
         switch (choice)
         { 
             case ADD:
                 time(&t);
-                strcpy(timestamp, ctime(&t));
+                strcpy(timestamp, ctime(&t)); // Get the current time
 
                 char* new_line_ptr = strchr(timestamp, '\n'); // Get rid of \n in the timestamp
                 if (new_line_ptr)
                     *new_line_ptr = '\0';
 
-                // printf("%s", timestamp);
+                if (head_ptr == NULL) // If the list is empty, make the genesis block:
+                {
+                    hash_info_needed newHash;
+                    strcpy(newHash.timestamp, timestamp);
+
+                    newHash.data = data; // A genesis block has an amount of 0.
+
+                    newHash.previous_hash = previous_hash; // Previous hash pointed to by a genesis block is NULL
+                    strcpy(temp_hash, make_hash(&newHash)); // Generate the block's Hash
+                    
+                    block_count++;
+                    head_ptr = add_block(head_ptr, block_count, timestamp, 0, temp_hash, previous_hash); // Make the block
+                    strcpy(previous_hash, temp_hash);
+                }
+
                 data = get_float("Enter amount of Cee: ");
-                // printf("Data: %.2f", data);
-                hash_info_needed newHash;
+
+                hash_info_needed newHash; // Gather the data needed to make the Hash
                 strcpy(newHash.timestamp, timestamp);
                 newHash.data = data;
                 newHash.previous_hash = previous_hash;
 
-                strcpy(temp_hash, make_hash(&newHash));
-                //printf("Previous Hash: %s", previous_hash);
-
+                strcpy(temp_hash, make_hash(&newHash)); // Generate the block's Hash
+                block_count++; 
                 head_ptr = add_block(head_ptr, block_count, timestamp, data, temp_hash, previous_hash);
                 strcpy(previous_hash, temp_hash);       
-                block_count++; 
-                print_block(head_ptr);      
+                
+                printf("Block successfully created and added to the blockchain!\n");    
                 break;     
             case DISPLAY:
                 if (head_ptr != NULL) {
                     print_block(head_ptr);
                 } else {
-                    printf("No data to display. Please add blocks or load data from CSV.\n");
+                    printf("No data to display. Please add blocks or load data from a .csv file.\n");
                 }
                 break;   
             case MENU:
                 show_menu();
                 break;
-            case FINALIZE_THE_BLOCKS:
+            case SAVE_AND_QUIT:
                 allocate_2D_array_memory(&block_node_ptrs, &rows, cols, block_count);
                 propagate_to_2D_array(block_node_ptrs, head_ptr, rows, cols);
 
@@ -134,9 +126,23 @@ int main() {
                 
                 free_linked_list_memory(head_ptr);
                 free_2D_array_memory(&block_node_ptrs, rows);
+                printf("Blockchain saved to 'cee_blockchain_record.csv'. See you next time!\n");
+                quit();
+                break;
+            case READ_FILE:
+                head_ptr = read_csv(head_ptr);
+                block_node *current = head_ptr;
+                while(current->next != NULL) // Move to the end of the list to link the next block added by user
+                {
+                    current = current->next;
+                }
+                strcpy(previous_hash, current->hash);
+                block_count = current->block_number;
+
+                printf("Blockchain sucessfully imported from 'cee_blockchain_record.csv'.\n");
                 break;
             case QUIT:
-                printf("Thanks, see you next time!");
+                printf("Thanks, see you next time!\n");
                 quit();
                 break;
         }
@@ -245,30 +251,26 @@ Cleanup:
     return hexHash;
 }
 
-block_node* add_block(block_node *head, int block_number, char new_timestamp[TIMESTAMP_SIZE], double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE])
+block_node* add_block(block_node *head, int block_number, char new_timestamp[TIMESTAMP_SIZE], 
+                      double new_data, char new_hash[HASH_SIZE], char new_previous_hash[HASH_SIZE])
 {
     // Create new block
     block_node *new_block = malloc(sizeof(block_node));
     if (new_block)
     {
         strcpy(new_block->timestamp, new_timestamp);
-        // printf("\nBlock Time: %s", new_block->timestamp);
+
         new_block->block_number = block_number;
-        // printf("\nNew Data: %f", new_data);
+
         new_block->data = new_data;
-        // printf("\nBlock Data: %f", new_block->data);
 
         strcpy(new_block->hash, new_hash);
-
-        // printf("\nNew Prev Hash: %s", new_previous_hash);
         strcpy(new_block->previous_hash, new_previous_hash);
-        // printf("\nBlock Prev Hash: %s", new_block->previous_hash);
 
         new_block->next = NULL;
         // If linked list is empty, the new block is the genesis block.
         if (head == NULL)
         {
-            //new_block->previous_hash = NULL;
             return new_block;
         }
         //Otherwise, iterate through the chain and add the block at the end.
@@ -348,8 +350,9 @@ void show_menu(void)
     printf("*               1: Add Block                   *\n");
     printf("*               2: Display Block Info          *\n");
     printf("*               3: Show Menu                   *\n");
-    printf("*               4: Finalize Added Blocks       *\n");
-    printf("*               5: Quit                        *\n");
+    printf("*               4: Save and Quit               *\n");
+    printf("*               5: Load a '.csv' file          *\n");
+    printf("*               6: Quit                        *\n");
     printf("************************************************\n");
 }
 
@@ -422,8 +425,9 @@ void print_block(block_node *block) {
     if (!current)
         puts("There are no blocks in the chain.");
     
+    // Move through the chain and print each block's info
     while (current) {
-        printf("Block=%d, Timestamp=%s, Data=%.2lf, Hash=%s, Previous Hash=%s\n",
+        printf("Block %d, Timestamp: %s, Amount (in Cee): %.2lf, Hash: %s, Previous Block's Hash: %s\n",
                current->block_number, current->timestamp, current->data, current->hash, current->previous_hash);
         current = current->next;
     }
@@ -449,8 +453,10 @@ void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char
             }
 
             else if (block_node_ptrs[i][j].data != 0.00 || i == 0) {
-                fprintf(blockchain_file, "%d,", block_number);
-                fprintf(blockchain_file, "%s,%.2f,%s,%s\n", block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
+                // fprintf(blockchain_file, "%d,", block_number);
+                fprintf(blockchain_file, "%d,%s,%.2f,%s,%s,\n", 
+                block_number, block_node_ptrs[i][j].timestamp, block_node_ptrs[i][j].data, 
+                block_node_ptrs[i][j].previous_hash, block_node_ptrs[i][j].hash);
             }
         }
     }
@@ -466,95 +472,49 @@ block_node* read_csv(block_node* head_ptr) {
         return head_ptr;
     }
 
-    char line[CSV_LINE_SIZE];
+    char csv_contents[1024]; // Where the .csv contents are stored
 
-    while (fgets(line, CSV_LINE_SIZE, blockchain_file) != NULL) {
-        int block_number;
-        char timestamp[TIMESTAMP_SIZE];
-        double data;
-        char hash[HASH_SIZE];
-        char previous_hash[HASH_SIZE];
-    // each thing is a string rn so need to convert to correct data type (impossible literally impossible)
-    }
-    fclose(blockchain_file);
-    return head_ptr;
-}
+    // Info needed to add new blocks from the file
+    int block_number;
+    char timestamp[TIMESTAMP_SIZE];
+    double data;
+    char hash[HASH_SIZE];
+    char previous_hash[HASH_SIZE];
 
-void read_csv_and_print() {
-    FILE* blockchain_file = fopen("cee_blockchain_record.csv", "r");
+    while(fgets(csv_contents, 1024, blockchain_file))
+    {
+        int read = 0; // Number of elements read from the file
 
-    if (!blockchain_file) {
-        printf("Error reading file.\n");
-        return;
-    }
+        // Read through each line of the file, and pull out necessary block info
+        read = sscanf(csv_contents,
+                      "%d,%64[^,],%lf,%255[^,],%255[^,]\n",
+                        &block_number, timestamp, &data, previous_hash, hash);
+        
+        // TESTING CODE:
+        // printf("\nRead: %d\n", read);
+        // printf("Block num: %d\nTimestamp: %s\nData: %lf\nPrevious Hash: %s\nHash: %s",
+        //         block_number, timestamp, data, previous_hash, hash); 
 
-    char line[CSV_LINE_SIZE];
+        if (read == 5) // If 5 elements were successfully read, create the block using that info
+        {   
+            head_ptr = add_block(head_ptr, block_number, timestamp, data, hash, previous_hash);
+        }
 
-    while (fgets(line, CSV_LINE_SIZE, blockchain_file) != NULL) {
-        // Print each line from the CSV file
-        printf("CSV Line: %s", line);
-    }
-
-    fclose(blockchain_file);
-}
-
-// block_node* read_csv(block_node* head_ptr) {
-//     FILE* blockchain_file = fopen("cee_blockchain_record.csv", "r");
-
-//     if (!blockchain_file) {
-//         printf("Error reading file.\n");
-//         return head_ptr;
-//     }
-
-//     char line[CSV_LINE_SIZE];
-
-//     while (fgets(line, CSV_LINE_SIZE, blockchain_file) != NULL) {
-    
-//     }
-
-//     fclose(blockchain_file);
-
-//     return head_ptr;
-
-    // Get the needed data from the csv
-    // Option 1: Get only the last block to continue the chain 
-
-    // Option 2: Load the entirety of the chain back into the program to continue making the chain
-    /*
-        // Make Placeholder vars to hold the info
-        char timestamp[TIMESTAMP_SIZE];
-        double data;
-        char hash[HASH_SIZE];
-        char previous_hash[HASH_SIZE];
-
-        //Store file contents in a variable
-        char text[SOME BUFFER SIZE BIG ENOUGH TO HOLD ALL THE DATA];
-
-        while(fgets(text, BUFFER_SIZE, input_file))
+        if (read != 5 && !feof(blockchain_file)) // If there were not 5 elements read, format is wrong
         {
-            // Iterate through file contents
-
-            // Scan 4 elements per line and stop at commas (csv should help with this)
-            if (sscanf(text, "%s, %lf, %s, %s", timestamp, &data, hash, previous_hash) == 4)
-            {
-                // Create a new block with the read info
-                head_ptr = add_block(head, timestamp, data, hash, previous_hash);
-            }
-            else
-            {
-                printf("Error: Incorrect format in line '%s'\n", text)
-                fclose(input_file);
-                return head_ptr;
-            }
-
-            fclose(input_file);
-
-            printf("Blockchain simulation record successfully loaded.");
+            printf("File format incorrect.\n");
             return head_ptr;
         }
-    
-    */
-// }
+
+        if (ferror(blockchain_file)) // Error handling
+        {
+            printf("Error reading file.\n");
+            return head_ptr;
+        }
+    }
+
+    return head_ptr;
+}
 
 void quit(void)
 {
