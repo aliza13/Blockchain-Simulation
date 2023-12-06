@@ -1,5 +1,5 @@
 /*blockchain_simulation.c
-Authors (Name & Student ID): Jacob Martin X00526617, Aliza Camero
+Authors: Jacob Martin and Aliza Camero 
 Date: 12/5/2023
 Purpose of the blockchain_simulation.c file: The main driver file for our blockchain simulation program.
 Prompts a user to choose between several options: Add block, display blockchain, show menu, save blockchain to 

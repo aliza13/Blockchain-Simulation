@@ -1,5 +1,5 @@
 /*blockchain_simulation_utility.c
-Authors (Name & Student ID): Jacob Martin X00526617, Aliza Camero
+Authors: Jacob Martin and Aliza Camero
 Date: 12/5/2023
 Purpose of the blockchain_simulation_utility.c file: Holds all of the function logic and documentation
 of the functions required for our driver file to operate successfully.
@@ -16,7 +16,13 @@ of the functions required for our driver file to operate successfully.
 #include <wchar.h>
 #include <math.h>
 
-
+/**
+ * Creates a unique hash using Window's bcrypt
+ * 
+ * @param block A pointer to type of hash_info_needed.
+ * 
+ * @return A hash in hexidecimal format.
+*/
 char* make_hash(hash_info_needed *block) {
     // takes in block_node ptr and returns hash as a hex string
     BCRYPT_ALG_HANDLE hAlg = NULL;
@@ -169,8 +175,16 @@ block_node* add_block(block_node *head, int block_number, char new_timestamp[TIM
     }
 }
 
+/**
+ * Saves user created blocks to a 2D array
+ * 
+ * @param block_node_ptrs A double pointer to a block_node struct.
+ * @param head_ptr A pointer to the head of the linked list.
+ * @param rows Rows in 2D array.
+ * @param cols Columns in 2D array.
+ * 
+ */
 void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, int rows, int cols) {
-    // TRIPLE pointer...... to modify the value **bnptr is pting to, not the actual **ptr
     int block_count = 0;
     block_node *current_ptr = head_ptr;
 
@@ -192,6 +206,15 @@ void propagate_to_2D_array(block_node **block_node_ptrs, block_node *head_ptr, i
     }
 }
 
+/**
+ * Allocates memory for 2D array
+ * 
+ * @param block_node_ptrs A triple pointer to a block_node struct.
+ * @param block_count Keeps track of how many blocks.
+ * @param rows Rows in 2D array, pointer type.
+ * @param cols Columns in 2D array.
+ * 
+ */
 void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols, int block_count) {
     int new_amount_of_rows = ceil((double)block_count / cols); // calc how many rows are needed and then round up
 
@@ -204,6 +227,12 @@ void allocate_2D_array_memory(block_node ***block_node_ptrs, int *rows, int cols
     *rows = new_amount_of_rows;
 }
 
+/**
+ * Frees linked list memory slots.
+ * 
+ * @param head A pointer to the head of the linked list.
+ * 
+ */
 void free_linked_list_memory(block_node *head) {
     block_node *current_ptr = head;
 
@@ -214,6 +243,13 @@ void free_linked_list_memory(block_node *head) {
     }
 }
 
+/**
+ * Frees 2D array memory slots.
+ * 
+ * @param block_node_ptrs A triple pointer to a block_node struct.
+ * @param rows Rows in 2D array.
+ * 
+ */
 void free_2D_array_memory(block_node ***block_node_ptrs, int rows) {
     // triple pointer points to the 2D array of b_n (double pointer already)
     for (int i = 0; i < rows; i++) {
@@ -342,6 +378,15 @@ void print_block(block_node *block) {
     return;
 }
 
+/**
+ * Write each block's data to a CSV file.
+ * 
+ * @param block_node_ptrs A double pointer to a block_node struct.
+ * @param rows Rows in 2D array.
+ * @param cols Columns in 2D array.
+ * @param filename Pointer to a file.
+ * 
+ */
 void write_bc_data_to_csv(block_node **block_node_ptrs, int rows, int cols, char *filename) {
     FILE *blockchain_file = fopen(filename, "w");
 
@@ -428,6 +473,13 @@ block_node* read_csv(block_node* head_ptr) {
     return head_ptr;
 }
 
+/**
+ * Checks to see if a CSV file exists in directory. 
+ * 
+ * @param filename Pointer to a file.
+ * 
+ * @return false if no CSV file exists.
+ */
 bool fileExists(char *fileName) {
     FILE *blockchain_file = fopen(fileName, "r");
     if (blockchain_file) {
