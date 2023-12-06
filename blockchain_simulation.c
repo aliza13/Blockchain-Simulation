@@ -1,3 +1,13 @@
+/*blockchain_simulation.c
+Authors (Name & Student ID): Jacob Martin X00526617, Aliza Camero
+Date: 12/5/2023
+Purpose of the blockchain_simulation.c file: The main driver file for our blockchain simulation program.
+Prompts a user to choose between several options: Add block, display blockchain, show menu, save blockchain to 
+csv file and quit, read csv file, and quit program. Once the user decides what they would like to do, the 
+program allows them to simulate creating a blockchain and output it to a csv file. Once a blockchain is started, 
+a user is not intended to be able to change it in order to simulated the immutability of a real blockchain.
+*/
+
 #include "blockchain_simulation.h"
 #include <stdio.h>
 #include <stdlib.h>

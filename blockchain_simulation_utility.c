@@ -1,3 +1,10 @@
+/*blockchain_simulation_utility.c
+Authors (Name & Student ID): Jacob Martin X00526617, Aliza Camero
+Date: 12/5/2023
+Purpose of the blockchain_simulation_utility.c file: Holds all of the function logic and documentation
+of the functions required for our driver file to operate successfully.
+*/
+
 #include "blockchain_simulation.h"
 #include <stdio.h>
 #include <stdlib.h>

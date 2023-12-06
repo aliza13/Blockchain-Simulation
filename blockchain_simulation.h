@@ -1,3 +1,10 @@
+/*blockchain_simulation.h
+Authors (Name & Student ID): Jacob Martin X00526617, Aliza Camero
+Date: 12/5/2023
+Purpose of the blockchain_simulation.h file: The header file for our blockchain simulation program.
+Houses all the function prototypes and #define macros.
+*/
+
 #pragma once
 
 #include <stdbool.h>
